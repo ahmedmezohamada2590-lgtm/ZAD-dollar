@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <!-- Firebase Compat SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
@@ -39,7 +40,7 @@
         .card img { width: 100%; height: 110px; object-fit: cover; }
 
         .support-btn { position: fixed; bottom: 85px; right: 20px; background: #0088cc; width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 1.5rem; z-index: 999; text-decoration: none; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; overflow-y: auto; }
         
         .footer-rights { text-align: center; padding: 20px; font-size: 0.7rem; color: #555; }
 
@@ -49,7 +50,11 @@
         .section { display: none; }
         .active-sec { display: block; }
         .hidden { display: none !important; }
-        .sold-out { background: #333 !important; color: #777 !important; cursor: not-allowed; border: none; }
+        
+        .admin-card { background: #1a1a1a; border: 1px solid var(--primary); padding: 12px; margin: 10px 0; border-radius: 12px; text-align: right; font-size: 0.8rem; }
+        .admin-btn-group { display: flex; gap: 8px; margin-top: 8px; }
+        .btn-success { background: #2ecc71; color: #000; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; flex: 1; }
+        .btn-danger { background: #e74c3c; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; flex: 1; }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -132,12 +137,23 @@
         <div id="profSec" class="section" style="padding:20px; text-align:center;">
             <div id="userProfileCard" style="background:var(--card-bg); padding:30px; border-radius:25px; border:1px solid var(--primary);">
                 <i class="fas fa-user-circle" style="font-size:4.5rem; color:var(--primary)"></i>
-                <h2 id="uNameDisplay" style="margin-bottom:5px;"></h2>
-                <p id="uPhoneDisplay" style="color:#888; margin-top:0; font-size:0.9rem;"></p>
+                <h2 id="uNameDisplay" style="margin-bottom:5px;">...</h2>
+                <p id="uPhoneDisplay" style="color:#888; margin-top:0; font-size:0.9rem;">...</p>
                 <div style="background:rgba(46, 204, 113, 0.1); color:#2ecc71; padding:8px; border-radius:10px; margin:15px 0; font-size:0.8rem; font-weight:bold;">حالة الحساب: مستثمر دولي ✅</div>
                 <button class="btn" style="background:#e74c3c; color:#fff;" onclick="logout()">تسجيل الخروج</button>
             </div>
-            <div id="adminArea"></div>
+            
+            <!-- لوحة التحكم للآدمن -->
+            <div id="adminArea" class="hidden" style="margin-top:20px;">
+                <h3 style="color:var(--primary); text-align:right;">⚡ لوحة تحكم الأدمن</h3>
+                <div style="text-align:right;">
+                    <h4 style="color:#2ecc71;">طلبـات الإيداع المعلقة</h4>
+                    <div id="adminDepositsList"></div>
+                    
+                    <h4 style="color:#e74c3c; margin-top:20px;">طلبـات السحب المعلقة</h4>
+                    <div id="adminWithdrawsList"></div>
+                </div>
+            </div>
         </div>
 
         <div class="bottom-nav">
@@ -167,13 +183,20 @@
     </div>
 
     <script>
-        // إخفاء اللودر تلقائياً بعد 3 ثوانٍ لحماية الشاشة من التعليق
         setTimeout(() => {
             const loader = document.getElementById('loader');
             if (loader) loader.style.display = 'none';
-        }, 3000);
+        }, 2000);
 
-        const firebaseConfig = { apiKey: "AIzaSyD3IX_spJGK0SAixGVxFuYjMvamP03FmMg", authDomain: "zad-investment-24c3f.firebaseapp.com", projectId: "zad-investment-24c3f", storageBucket: "zad-investment-24c3f.firebasestorage.app", messagingSenderId: "129259120964", appId: "1:129259120964:web:0d26ca49c9f42d557b8f11" };
+        const firebaseConfig = {
+            apiKey: "AIzaSyBCBGKC1uqEcJTqyt-tcc2pSp17G9ttL4g",
+            authDomain: "zad-dollar.firebaseapp.com",
+            projectId: "zad-dollar",
+            storageBucket: "zad-dollar.firebasestorage.app",
+            messagingSenderId: "151365562104",
+            appId: "1:151365562104:web:134709857d04fd83d9150d"
+        };
+
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth(), db = firebase.firestore();
         let currentUser = {};
@@ -201,10 +224,16 @@
                             السعر: <b>${p.price}$</b><br>
                             الربح: <b style="color:#2ecc71;">${p.daily}$/يوم</b>
                         </div>
-                        <button class="btn" style="padding:6px; font-size:0.75rem; width:85%; margin:auto;" onclick="buyPlan('${p.name}', ${p.price}, ${p.daily})">تفعيل</button>
+                        <button class="btn" style="padding:6px; font-size:0.75rem; width:85%; margin:auto;" onclick="buyPlan('${p.name}', ${p.price})">تفعيل</button>
                     </div>
                 `;
             });
+        }
+
+        // تحويل واختيار الباقات فوراً إلى الشحن
+        function buyPlan(name, price) {
+            openQuickDep();
+            document.getElementById('qAmt').value = price;
         }
 
         auth.onAuthStateChanged(user => {
@@ -214,6 +243,7 @@
             if(user) {
                 document.getElementById('authPage').classList.add('hidden');
                 document.getElementById('mainApp').classList.remove('hidden');
+                
                 db.collection("users").doc(user.uid).onSnapshot(doc => {
                     if(doc.exists) {
                         currentUser = doc.data();
@@ -223,8 +253,12 @@
                         document.getElementById('refLinkDisplay').innerText = `${window.location.origin}?id=${currentUser.refId}`;
                         document.getElementById('refCounter').innerText = currentUser.refs || 0;
                         document.getElementById('refProfit').innerText = (currentUser.refProfit || 0).toFixed(2);
-                        loadAdminPanel();
-                        checkProfits();
+
+                        // إظهار الأدمن لو كان هو أدمن النظام
+                        if(currentUser.phone === ADMIN_PHONE) {
+                            document.getElementById('adminArea').classList.remove('hidden');
+                            loadAdminData();
+                        }
                     }
                 });
                 renderPlans();
@@ -257,23 +291,229 @@
                 const res = await auth.createUserWithEmailAndPassword(p+"@zad.com", s);
                 const rid = "ZAD" + Math.floor(1000 + Math.random() * 9000);
                 await db.collection("users").doc(res.user.uid).set({ 
-                    name:n, phone:p, refId:rid, balance:0, refs:0, refProfit:0, invitedBy:refBy||"none", lastDaily:0, createdAt: firebase.firestore.FieldValue.serverTimestamp() 
+                    name: n, 
+                    phone: p, 
+                    refId: rid, 
+                    balance: 0, 
+                    refs: 0, 
+                    refProfit: 0, 
+                    invitedBy: refBy || "none", 
+                    lastDaily: 0, 
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp() 
                 });
             } catch(e) { alert(e.message); }
         }
 
+        // ضغط الصورة لتجنب فشل الرفع في Firestore
+        function compressImage(file, maxWidth, quality) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = event => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        resolve(canvas.toDataURL('image/jpeg', quality));
+                    };
+                    img.onerror = error => reject(error);
+                };
+            });
+        }
+
+        // معالجة الإيداع وتفادي فشل الرفع
         async function handleDeposit() {
             const amt = document.getElementById('qAmt').value, ph = document.getElementById('sPhone').value, file = document.getElementById('sImg').files[0];
             if(!ph || !file || !amt) return alert("اكمل البيانات وارفع الصورة");
-            const btn = document.getElementById('confBtn'); btn.innerText = "جاري المعالجة..."; btn.disabled = true;
-            const reader = new FileReader(); reader.readAsDataURL(file);
-            reader.onload = async () => {
-                try {
-                    await db.collection("deposits").add({ uid:auth.currentUser.uid, uName:currentUser.name, amount:Number(amt), txid:ph, image:reader.result, status:"pending", invitedBy:currentUser.invitedBy||"none", createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-                    alert("تم الإرسال للمراجعة بنجاح"); closeAll();
-                } catch(e) { alert("فشل الرفع"); }
-                btn.innerText = "تأكيد الشحن"; btn.disabled = false;
-            };
+            const btn = document.getElementById('confBtn'); 
+            btn.innerText = "جاري المعالجة..."; 
+            btn.disabled = true;
+
+            try {
+                const compressedBase64 = await compressImage(file, 600, 0.6);
+                await db.collection("deposits").add({ 
+                    uid: auth.currentUser.uid, 
+                    uName: currentUser.name || "غير معروف", 
+                    uPhone: currentUser.phone || "",
+                    amount: Number(amt), 
+                    txid: ph, 
+                    image: compressedBase64, 
+                    status: "pending", 
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp() 
+                });
+                alert("تم إرسال طلب الشحن للمراجعة بنجاح"); 
+                closeAll();
+            } catch(e) { 
+                alert("فشل الرفع، يرجى إعادة المحاولة ورسالة الخطأ: " + e.message); 
+            }
+            btn.innerText = "تأكيد الشحن"; 
+            btn.disabled = false;
         }
 
-        a
+        // تفعيل المكافأة اليومية (كل 24 ساعة)
+        async function collectDaily() {
+            const now = Date.now();
+            const last = currentUser.lastDaily || 0;
+            const diff = now - last;
+            const hoursLeft = Math.ceil((86400000 - diff) / (1000 * 60 * 60));
+
+            if (diff < 86400000) {
+                return alert(`لقد جمعت مكافأتك بالفعل! يمكنك الجمع بعد ${hoursLeft} ساعة.`);
+            }
+
+            try {
+                await db.collection("users").doc(auth.currentUser.uid).update({
+                    balance: firebase.firestore.FieldValue.increment(0.50),
+                    lastDaily: now
+                });
+                alert("مبروك! تم إضافة 0.50$ لمكافأتك اليومية 🎉");
+            } catch (e) {
+                alert("حدث خطأ أثناء جمع المكافأة");
+            }
+        }
+
+        // طلبات السحب من المستخدم
+        async function handleWithdraw() {
+            const amt = Number(document.getElementById('wAmount').value);
+            const wallet = document.getElementById('wWallet').value;
+            
+            if(!amt || amt < 10) return alert("الحد الأدنى للسحب هو 10$");
+            if(!wallet) return alert("يرجى إدخال عنوان المحفظة");
+            if(amt > currentUser.balance) return alert("رصيدك غير كافٍ للسحب");
+
+            const btn = document.getElementById('withdrawBtn');
+            btn.disabled = true;
+
+            try {
+                await db.collection("users").doc(auth.currentUser.uid).update({
+                    balance: firebase.firestore.FieldValue.increment(-amt)
+                });
+                await db.collection("withdraws").add({
+                    uid: auth.currentUser.uid,
+                    uName: currentUser.name,
+                    uPhone: currentUser.phone,
+                    amount: amt,
+                    wallet: wallet,
+                    status: "pending",
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                alert("تم تقديم طلب السحب بنجاح وقيد المراجعة!");
+                document.getElementById('wAmount').value = "";
+                document.getElementById('wWallet').value = "";
+            } catch(e) {
+                alert("حدث خطأ أثناء طلب السحب");
+            }
+            btn.disabled = false;
+        }
+
+        // تحميل بيانات لوحة تحكم الأدمن
+        function loadAdminData() {
+            // جلب الإيداعات المعلقة
+            db.collection("deposits").where("status", "==", "pending").onSnapshot(snap => {
+                const root = document.getElementById('adminDepositsList');
+                root.innerHTML = '';
+                if(snap.empty) root.innerHTML = '<small style="color:#666">لا يوجد طلبات إيداع معلقة</small>';
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    root.innerHTML += `
+                        <div class="admin-card">
+                            <b>المستخدم:</b> ${d.uName} (${d.uPhone})<br>
+                            <b>المبلغ:</b> <span style="color:gold;">${d.amount}$</span><br>
+                            <b>العملية/TXID:</b> ${d.txid}<br>
+                            <img src="${d.image}" style="width:100%; max-height:150px; object-fit:contain; border-radius:8px; margin-top:5px;"><br>
+                            <div class="admin-btn-group">
+                                <button class="btn-success" onclick="approveDeposit('${doc.id}', '${d.uid}', ${d.amount})">موافقة وإضافة الرصيد</button>
+                                <button class="btn-danger" onclick="rejectDeposit('${doc.id}')">رفض</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+
+            // جلب السحوبات المعلقة
+            db.collection("withdraws").where("status", "==", "pending").onSnapshot(snap => {
+                const root = document.getElementById('adminWithdrawsList');
+                root.innerHTML = '';
+                if(snap.empty) root.innerHTML = '<small style="color:#666">لا يوجد طلبات سحب معلقة</small>';
+                snap.forEach(doc => {
+                    const w = doc.data();
+                    root.innerHTML += `
+                        <div class="admin-card">
+                            <b>المستخدم:</b> ${w.uName} (${w.uPhone})<br>
+                            <b>المبلغ:</b> <span style="color:#e74c3c;">${w.amount}$</span><br>
+                            <b>المحفظة:</b> <small style="word-break:break-all; color:gold;">${w.wallet}</small><br>
+                            <div class="admin-btn-group">
+                                <button class="btn-success" onclick="approveWithdraw('${doc.id}')">تأكيد تم التحويل</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        // موافقة الأدمن على الإيداع
+        async function approveDeposit(depId, uid, amount) {
+            if(!confirm("هل تريد التأكيد وإضافة الرصيد للمستخدم؟")) return;
+            try {
+                await db.collection("users").doc(uid).update({
+                    balance: firebase.firestore.FieldValue.increment(amount)
+                });
+                await db.collection("deposits").doc(depId).update({ status: "approved" });
+                alert("تمت الموافقة بنجاح ونزل الرصيد للمستخدم!");
+            } catch(e) { alert("حدث خطأ"); }
+        }
+
+        // رفض الإيداع
+        async function rejectDeposit(depId) {
+            if(!confirm("هل تريد رفض هذا الطلب؟")) return;
+            await db.collection("deposits").doc(depId).update({ status: "rejected" });
+        }
+
+        // تأكيد إرسال السحب
+        async function approveWithdraw(wId) {
+            if(!confirm("هل تم تحويل المبلغ بنجاح؟")) return;
+            await db.collection("withdraws").doc(wId).update({ status: "completed" });
+            alert("تم إكمال العملية وتأكيد السحب!");
+        }
+
+        function tab(secId, btnId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active-sec'));
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            document.getElementById(secId).classList.add('active-sec');
+            document.getElementById(btnId).classList.add('active');
+        }
+
+        function openQuickDep() {
+            document.getElementById('depPage').style.display = 'flex';
+        }
+
+        function closeAll() {
+            document.getElementById('depPage').style.display = 'none';
+        }
+
+        function copyNum() {
+            navigator.clipboard.writeText(document.getElementById('usdtWallet').innerText);
+            alert("تم نسخ عنوان المحفظة!");
+        }
+
+        function copyRef() {
+            navigator.clipboard.writeText(document.getElementById('refLinkDisplay').innerText);
+            alert("تم نسخ رابط الإحالة!");
+        }
+
+        function logout() {
+            auth.signOut();
+        }
+    </script>
+</body>
+</html>
