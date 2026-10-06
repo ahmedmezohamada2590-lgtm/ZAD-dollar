@@ -51,10 +51,13 @@
         .active-sec { display: block; }
         .hidden { display: none !important; }
         
-        .admin-card { background: #1a1a1a; border: 1px solid var(--primary); padding: 12px; margin: 10px 0; border-radius: 12px; text-align: right; font-size: 0.8rem; }
-        .admin-btn-group { display: flex; gap: 8px; margin-top: 8px; }
-        .btn-success { background: #2ecc71; color: #000; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; flex: 1; }
-        .btn-danger { background: #e74c3c; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; flex: 1; }
+        .admin-card { background: #111; border: 1px solid var(--primary); padding: 15px; margin: 15px 0; border-radius: 12px; text-align: right; font-size: 0.85rem; color: #fff; }
+        .admin-card img { width: 100%; max-height: 300px; object-fit: contain; border-radius: 8px; margin: 10px 0; background: #000; border: 1px solid #333; display: block; }
+        .admin-btn-group { display: flex; gap: 8px; margin-top: 10px; }
+        .btn-success { background: #2ecc71; color: #000; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; flex: 1; }
+        .btn-danger { background: #e74c3c; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; flex: 1; }
+        
+        .active-plan-card { background: #1a1a1a; border: 1px solid #2ecc71; padding: 12px; border-radius: 12px; margin: 10px 0; text-align: right; font-size: 0.8rem; }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -142,6 +145,12 @@
                 <div style="background:rgba(46, 204, 113, 0.1); color:#2ecc71; padding:8px; border-radius:10px; margin:15px 0; font-size:0.8rem; font-weight:bold;">حالة الحساب: مستثمر دولي ✅</div>
                 <button class="btn" style="background:#e74c3c; color:#fff;" onclick="logout()">تسجيل الخروج</button>
             </div>
+
+            <!-- قسم الباقات المفعلة -->
+            <div style="margin-top:20px; text-align:right;">
+                <h4 style="color:var(--primary); font-size:0.95rem;">📊 باقاتي النّشطة:</h4>
+                <div id="myActivePlans"></div>
+            </div>
             
             <!-- لوحة التحكم للآدمن -->
             <div id="adminArea" class="hidden" style="margin-top:20px;">
@@ -203,12 +212,12 @@
         const ADMIN_PHONE = "01098235032";
 
         const plans = [
-            { name: "باقة VIP 1", price: 10, daily: 1.20, img: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=500" },
-            { name: "باقة VIP 2", price: 25, daily: 3.10, img: "https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=500" },
-            { name: "باقة VIP 3", price: 50, daily: 6.50, img: "https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=500" },
-            { name: "باقة VIP 4", price: 100, daily: 14.00, img: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=500" },
-            { name: "باقة VIP 5", price: 250, daily: 36.00, img: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=500" },
-            { name: "باقة VIP 6", price: 500, daily: 75.00, img: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=500" }
+            { id: 1, name: "باقة VIP 1", price: 10, daily: 1.20, img: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=500" },
+            { id: 2, name: "باقة VIP 2", price: 25, daily: 3.10, img: "https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=500" },
+            { id: 3, name: "باقة VIP 3", price: 50, daily: 6.50, img: "https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=500" },
+            { id: 4, name: "باقة VIP 4", price: 100, daily: 14.00, img: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=500" },
+            { id: 5, name: "باقة VIP 5", price: 250, daily: 36.00, img: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=500" },
+            { id: 6, name: "باقة VIP 6", price: 500, daily: 75.00, img: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=500" }
         ];
 
         function renderPlans() {
@@ -224,16 +233,116 @@
                             السعر: <b>${p.price}$</b><br>
                             الربح: <b style="color:#2ecc71;">${p.daily}$/يوم</b>
                         </div>
-                        <button class="btn" style="padding:6px; font-size:0.75rem; width:85%; margin:auto;" onclick="buyPlan('${p.name}', ${p.price})">تفعيل</button>
+                        <button class="btn" style="padding:6px; font-size:0.75rem; width:85%; margin:auto;" onclick="buyPlan(${p.id})">تفعيل</button>
                     </div>
                 `;
             });
         }
 
-        // تحويل واختيار الباقات فوراً إلى الشحن
-        function buyPlan(name, price) {
-            openQuickDep();
-            document.getElementById('qAmt').value = price;
+        // دالة تفعيل الباقة عند وجود رصيد
+        async function buyPlan(planId) {
+            const p = plans.find(item => item.id === planId);
+            if (!p) return;
+
+            const userBalance = currentUser.balance || 0;
+
+            if (userBalance < p.price) {
+                if (confirm(`رصيدك المتاح (${userBalance.toFixed(2)}$) غير كافٍ لتفعيل ${p.name} (${p.price}$). هل تريد الانتقال لصفحة الشحن؟`)) {
+                    openQuickDep();
+                    document.getElementById('qAmt').value = p.price;
+                }
+                return;
+            }
+
+            if (!confirm(`هل تريد تأكيد تفعيل ${p.name} بسعر ${p.price}$؟`)) return;
+
+            try {
+                const now = Date.now();
+                // 1. خصم ثمن الباقة من حساب المستخدم
+                await db.collection("users").doc(auth.currentUser.uid).update({
+                    balance: firebase.firestore.FieldValue.increment(-p.price)
+                });
+
+                // 2. إضافة الباقة لقائمة الباقات المفعلة للمستخدم
+                await db.collection("user_plans").add({
+                    uid: auth.currentUser.uid,
+                    planName: p.name,
+                    price: p.price,
+                    dailyProfit: p.daily,
+                    activatedAt: now,
+                    lastProfitPaidAt: now, // يبدأ حساب الـ 24 ساعة من الآن
+                    status: "active"
+                });
+
+                alert(`تم تفعيل ${p.name} بنجاح! نزل أول ربح متاح خلال 24 ساعة تلقائياً ✨`);
+                checkAndPayProfits(); // تحديث فوري
+            } catch (e) {
+                alert("حدث خطأ أثناء تفعيل الباقة: " + e.message);
+            }
+        }
+
+        // دالة احتساب الأرباح اليومية تلقائياً
+        async function checkAndPayProfits() {
+            if (!auth.currentUser) return;
+            const now = Date.now();
+            const ONE_DAY = 24 * 60 * 60 * 1000; // 24 ساعة بـ MS
+
+            try {
+                const snap = await db.collection("user_plans")
+                    .where("uid", "==", auth.currentUser.uid)
+                    .where("status", "==", "active")
+                    .get();
+
+                let totalProfitToAdd = 0;
+                const activeListRoot = document.getElementById('myActivePlans');
+                if (activeListRoot) activeListRoot.innerHTML = '';
+
+                if (snap.empty && activeListRoot) {
+                    activeListRoot.innerHTML = '<small style="color:#666">لا توجد باقات مفعلة حالياً.</small>';
+                }
+
+                for (let doc of snap.docs) {
+                    const planData = doc.data();
+                    const lastPaid = planData.lastProfitPaidAt || planData.activatedAt;
+                    const timePassed = now - lastPaid;
+
+                    // حساب عدد الأيام الكاملة المستحقة للأرباح
+                    const daysEarned = Math.floor(timePassed / ONE_DAY);
+
+                    if (daysEarned >= 1) {
+                        const profitForPlan = daysEarned * planData.dailyProfit;
+                        totalProfitToAdd += profitForPlan;
+
+                        // تحديث آخر وقت تم دفع الأرباح فيه لعدم التكرار
+                        const newLastPaid = lastPaid + (daysEarned * ONE_DAY);
+                        await db.collection("user_plans").doc(doc.id).update({
+                            lastProfitPaidAt: newLastPaid
+                        });
+                    }
+
+                    // عرض الباقات النشطة في الحساب
+                    if (activeListRoot) {
+                        const nextProfitInHours = Math.max(0, Math.ceil((ONE_DAY - ((now - (planData.lastProfitPaidAt || planData.activatedAt)) % ONE_DAY)) / (1000 * 60 * 60)));
+                        activeListRoot.innerHTML += `
+                            <div class="active-plan-card">
+                                <b>${planData.planName}</b> - <span style="color:#2ecc71;">+${planData.dailyProfit}$/يوم</span><br>
+                                <small style="color:#888;">الربح القادم خلال: ${nextProfitInHours} ساعة</small>
+                            </div>
+                        `;
+                    }
+                }
+
+                // إضافة الربح التراكمي المكتسب لرصيد المستخدم
+                if (totalProfitToAdd > 0) {
+                    await db.collection("users").doc(auth.currentUser.uid).update({
+                        balance: firebase.firestore.FieldValue.increment(totalProfitToAdd)
+                    });
+                    alert(`🎉 مبارك! تم نزول أرباح باقاتك المكتسبة بقيمة $${totalProfitToAdd.toFixed(2)} إلى رصيدك.`);
+                }
+
+            } catch (e) {
+                console.error("خطأ في احتساب الأرباح:", e);
+            }
         }
 
         auth.onAuthStateChanged(user => {
@@ -254,7 +363,6 @@
                         document.getElementById('refCounter').innerText = currentUser.refs || 0;
                         document.getElementById('refProfit').innerText = (currentUser.refProfit || 0).toFixed(2);
 
-                        // إظهار الأدمن لو كان هو أدمن النظام
                         if(currentUser.phone === ADMIN_PHONE) {
                             document.getElementById('adminArea').classList.remove('hidden');
                             loadAdminData();
@@ -262,6 +370,7 @@
                     }
                 });
                 renderPlans();
+                checkAndPayProfits(); // فحص ودفع الأرباح عند تسجيل الدخول
             } else {
                 document.getElementById('authPage').classList.remove('hidden');
                 document.getElementById('mainApp').classList.add('hidden');
@@ -304,63 +413,50 @@
             } catch(e) { alert(e.message); }
         }
 
-        // ضغط الصورة لتجنب فشل الرفع في Firestore
-        function compressImage(file, maxWidth, quality) {
+        function convertFileToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
-                reader.onload = event => {
-                    const img = new Image();
-                    img.src = event.target.result;
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        let width = img.width;
-                        let height = img.height;
-                        if (width > maxWidth) {
-                            height = Math.round((height * maxWidth) / width);
-                            width = maxWidth;
-                        }
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        resolve(canvas.toDataURL('image/jpeg', quality));
-                    };
-                    img.onerror = error => reject(error);
-                };
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
             });
         }
 
-        // معالجة الإيداع وتفادي فشل الرفع
         async function handleDeposit() {
-            const amt = document.getElementById('qAmt').value, ph = document.getElementById('sPhone').value, file = document.getElementById('sImg').files[0];
+            const amt = document.getElementById('qAmt').value;
+            const ph = document.getElementById('sPhone').value;
+            const file = document.getElementById('sImg').files[0];
+
             if(!ph || !file || !amt) return alert("اكمل البيانات وارفع الصورة");
+
             const btn = document.getElementById('confBtn'); 
             btn.innerText = "جاري المعالجة..."; 
             btn.disabled = true;
 
             try {
-                const compressedBase64 = await compressImage(file, 600, 0.6);
+                const imageBase64 = await convertFileToBase64(file);
+
                 await db.collection("deposits").add({ 
                     uid: auth.currentUser.uid, 
                     uName: currentUser.name || "غير معروف", 
                     uPhone: currentUser.phone || "",
                     amount: Number(amt), 
                     txid: ph, 
-                    image: compressedBase64, 
+                    image: imageBase64, 
                     status: "pending", 
                     createdAt: firebase.firestore.FieldValue.serverTimestamp() 
                 });
+
                 alert("تم إرسال طلب الشحن للمراجعة بنجاح"); 
                 closeAll();
             } catch(e) { 
-                alert("فشل الرفع، يرجى إعادة المحاولة ورسالة الخطأ: " + e.message); 
+                alert("حدث خطأ أثناء رفع الصورة: " + e.message); 
             }
+
             btn.innerText = "تأكيد الشحن"; 
             btn.disabled = false;
         }
 
-        // تفعيل المكافأة اليومية (كل 24 ساعة)
         async function collectDaily() {
             const now = Date.now();
             const last = currentUser.lastDaily || 0;
@@ -382,7 +478,6 @@
             }
         }
 
-        // طلبات السحب من المستخدم
         async function handleWithdraw() {
             const amt = Number(document.getElementById('wAmount').value);
             const wallet = document.getElementById('wWallet').value;
@@ -416,9 +511,7 @@
             btn.disabled = false;
         }
 
-        // تحميل بيانات لوحة تحكم الأدمن
         function loadAdminData() {
-            // جلب الإيداعات المعلقة
             db.collection("deposits").where("status", "==", "pending").onSnapshot(snap => {
                 const root = document.getElementById('adminDepositsList');
                 root.innerHTML = '';
@@ -430,7 +523,9 @@
                             <b>المستخدم:</b> ${d.uName} (${d.uPhone})<br>
                             <b>المبلغ:</b> <span style="color:gold;">${d.amount}$</span><br>
                             <b>العملية/TXID:</b> ${d.txid}<br>
-                            <img src="${d.image}" style="width:100%; max-height:150px; object-fit:contain; border-radius:8px; margin-top:5px;"><br>
+                            <a href="${d.image}" target="_blank">
+                                <img src="${d.image}" alt="إثبات الإيداع" onerror="this.onerror=null; this.alt='تعذر تحميل الصورة';">
+                            </a>
                             <div class="admin-btn-group">
                                 <button class="btn-success" onclick="approveDeposit('${doc.id}', '${d.uid}', ${d.amount})">موافقة وإضافة الرصيد</button>
                                 <button class="btn-danger" onclick="rejectDeposit('${doc.id}')">رفض</button>
@@ -440,7 +535,6 @@
                 });
             });
 
-            // جلب السحوبات المعلقة
             db.collection("withdraws").where("status", "==", "pending").onSnapshot(snap => {
                 const root = document.getElementById('adminWithdrawsList');
                 root.innerHTML = '';
@@ -461,7 +555,6 @@
             });
         }
 
-        // موافقة الأدمن على الإيداع
         async function approveDeposit(depId, uid, amount) {
             if(!confirm("هل تريد التأكيد وإضافة الرصيد للمستخدم؟")) return;
             try {
@@ -473,13 +566,11 @@
             } catch(e) { alert("حدث خطأ"); }
         }
 
-        // رفض الإيداع
         async function rejectDeposit(depId) {
             if(!confirm("هل تريد رفض هذا الطلب؟")) return;
             await db.collection("deposits").doc(depId).update({ status: "rejected" });
         }
 
-        // تأكيد إرسال السحب
         async function approveWithdraw(wId) {
             if(!confirm("هل تم تحويل المبلغ بنجاح؟")) return;
             await db.collection("withdraws").doc(wId).update({ status: "completed" });
