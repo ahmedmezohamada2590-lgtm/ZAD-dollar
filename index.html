@@ -35,10 +35,10 @@
         .trust-note { text-align: center; padding: 10px; font-size: 0.75rem; color: #aaa; background: rgba(255,204,0,0.05); margin: 10px 15px; border-radius: 10px; border: 1px dashed rgba(255,204,0,0.2); }
 
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; }
-        .card { background: var(--card-bg); border-radius: 20px; border: 1px solid #222; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .card img { width: 100%; height: 100px; object-fit: cover; filter: brightness(0.6); }
+        .card { background: var(--card-bg); border-radius: 20px; border: 1px solid #222; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3); text-align: center; padding-bottom: 10px; }
+        .card img { width: 100%; height: 110px; object-fit: cover; }
 
-        .support-btn { position: fixed; bottom: 85px; right: 20px; background: #0088cc; width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 1.5rem; z-index: 999; }
+        .support-btn { position: fixed; bottom: 85px; right: 20px; background: #0088cc; width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 1.5rem; z-index: 999; text-decoration: none; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
         
         .footer-rights { text-align: center; padding: 20px; font-size: 0.7rem; color: #555; }
@@ -56,7 +56,7 @@
 <body>
 
     <div id="loader"><h1 style="color:var(--primary)">ZAD</h1><div class="spinner"></div></div>
-    <a href="https://t.me/zad1320" class="support-btn"><i class="fab fa-telegram-plane"></i></a>
+    <a href="https://t.me/zad1320" class="support-btn" target="_blank"><i class="fab fa-telegram-plane"></i></a>
 
     <div id="authPage" class="landing">
         <div class="auth-box">
@@ -87,7 +87,7 @@
             <div class="brand-center">ZAD SERVICES</div>
             <div style="display:flex; gap:10px; align-items:center;">
                 <i class="fas fa-adjust" onclick="document.body.classList.toggle('light-mode')" style="color:var(--primary); cursor:pointer;"></i>
-                <button onclick="openQuickDep()" style="background:none; border:1px solid var(--primary); color:var(--primary); border-radius:8px; padding:2px 10px; font-size:0.7rem;">شحن USDT</button>
+                <button onclick="openQuickDep()" style="background:none; border:1px solid var(--primary); color:var(--primary); border-radius:8px; padding:2px 10px; font-size:0.7rem; cursor:pointer;">شحن USDT</button>
             </div>
         </div>
 
@@ -153,7 +153,7 @@
         <div style="background:#111; padding:15px; border-radius:15px; border:1px dashed var(--primary); text-align:center; width:100%; max-width:320px; margin:10px 0;">
             <small>عنوان محفظة الاستلام:</small><br>
             <b id="usdtWallet" style="font-size:0.8rem; word-break:break-all; color:var(--primary)">TCCA7LzPh4b6KhFPHkTPTtxwRNm6En2fqA</b><br>
-            <button onclick="copyNum()" style="background:#222; color:gold; border:none; padding:5px 10px; border-radius:5px; margin-top:10px; font-size:0.7rem;">نسخ العنوان <i class="fas fa-copy"></i></button>
+            <button onclick="copyNum()" style="background:#222; color:gold; border:none; padding:5px 10px; border-radius:5px; margin-top:10px; font-size:0.7rem; cursor:pointer;">نسخ العنوان <i class="fas fa-copy"></i></button>
         </div>
         <input type="number" id="qAmt" placeholder="اكتب المبلغ بالدولار $">
         <input type="text" id="sPhone" placeholder="رقم العملية أو الـ TXID">
@@ -163,31 +163,102 @@
         </div>
         <p style="font-size: 0.55rem; color: #555; margin-bottom: 10px;">بضغطك على تأكيد، أنت تقر بشراء خدمة رقمية غير مستردة.</p>
         <button id="confBtn" class="btn" onclick="handleDeposit()">تأكيد الشحن</button>
-        <button onclick="closeAll()" style="background:none; color:#555; border:none; margin-top:15px;">إلغاء</button>
+        <button onclick="closeAll()" style="background:none; color:#555; border:none; margin-top:15px; cursor:pointer;">إلغاء</button>
     </div>
 
     <script>
+        // إخفاء اللودر تلقائياً بعد 3 ثوانٍ لحماية الشاشة من التعليق
+        setTimeout(() => {
+            const loader = document.getElementById('loader');
+            if (loader) loader.style.display = 'none';
+        }, 3000);
+
         const firebaseConfig = { apiKey: "AIzaSyD3IX_spJGK0SAixGVxFuYjMvamP03FmMg", authDomain: "zad-investment-24c3f.firebaseapp.com", projectId: "zad-investment-24c3f", storageBucket: "zad-investment-24c3f.firebasestorage.app", messagingSenderId: "129259120964", appId: "1:129259120964:web:0d26ca49c9f42d557b8f11" };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth(), db = firebase.firestore();
         let currentUser = {};
         const ADMIN_PHONE = "01098235032";
 
+        const plans = [
+            { name: "باقة VIP 1", price: 10, daily: 1.20, img: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=500" },
+            { name: "باقة VIP 2", price: 25, daily: 3.10, img: "https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=500" },
+            { name: "باقة VIP 3", price: 50, daily: 6.50, img: "https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=500" },
+            { name: "باقة VIP 4", price: 100, daily: 14.00, img: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=500" },
+            { name: "باقة VIP 5", price: 250, daily: 36.00, img: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=500" },
+            { name: "باقة VIP 6", price: 500, daily: 75.00, img: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=500" }
+        ];
+
+        function renderPlans() {
+            const root = document.getElementById('plansRoot');
+            if (!root) return;
+            root.innerHTML = '';
+            plans.forEach(p => {
+                root.innerHTML += `
+                    <div class="card">
+                        <img src="${p.img}" alt="${p.name}">
+                        <h4 style="margin:8px 0 3px 0; font-size:0.85rem; color:var(--primary);">${p.name}</h4>
+                        <div style="font-size:0.7rem; color:#aaa; margin-bottom:8px;">
+                            السعر: <b>${p.price}$</b><br>
+                            الربح: <b style="color:#2ecc71;">${p.daily}$/يوم</b>
+                        </div>
+                        <button class="btn" style="padding:6px; font-size:0.75rem; width:85%; margin:auto;" onclick="buyPlan('${p.name}', ${p.price}, ${p.daily})">تفعيل</button>
+                    </div>
+                `;
+            });
+        }
+
+        auth.onAuthStateChanged(user => {
+            const loader = document.getElementById('loader');
+            if (loader) loader.style.display = 'none';
+            
+            if(user) {
+                document.getElementById('authPage').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                db.collection("users").doc(user.uid).onSnapshot(doc => {
+                    if(doc.exists) {
+                        currentUser = doc.data();
+                        document.getElementById('balDisplay').innerText = (currentUser.balance || 0).toFixed(2);
+                        document.getElementById('uNameDisplay').innerText = currentUser.name || "مستخدم ZAD";
+                        document.getElementById('uPhoneDisplay').innerText = currentUser.phone || "";
+                        document.getElementById('refLinkDisplay').innerText = `${window.location.origin}?id=${currentUser.refId}`;
+                        document.getElementById('refCounter').innerText = currentUser.refs || 0;
+                        document.getElementById('refProfit').innerText = (currentUser.refProfit || 0).toFixed(2);
+                        loadAdminPanel();
+                        checkProfits();
+                    }
+                });
+                renderPlans();
+            } else {
+                document.getElementById('authPage').classList.remove('hidden');
+                document.getElementById('mainApp').classList.add('hidden');
+            }
+        });
+
+        function toggleForm(isReg) {
+            document.getElementById('loginForm').classList.toggle('hidden', isReg);
+            document.getElementById('regForm').classList.toggle('hidden', !isReg);
+        }
+
         async function handleLogin() {
             const p = document.getElementById('lPhone').value, s = document.getElementById('lPass').value;
-            try { await auth.signInWithEmailAndPassword(p+"@zad.com", s); localStorage.setItem('zad_active', 'true'); location.reload(); }
-            catch(e) { alert("بيانات غلط"); }
+            if(!p || !s) return alert("أدخل البيانات كاملة");
+            try { 
+                await auth.signInWithEmailAndPassword(p+"@zad.com", s); 
+            } catch(e) { 
+                alert("بيانات الدخول غير صحيحة"); 
+            }
         }
 
         async function handleRegister() {
             const n = document.getElementById('rName').value, p = document.getElementById('rPhone').value, s = document.getElementById('rPass').value, sc = document.getElementById('rPassC').value;
-            if(!n || p.length < 11 || s !== sc) return alert("تأكد من البيانات");
+            if(!n || p.length < 11 || s !== sc) return alert("تأكد من كتابة البيانات بشكل صحيح وتطابق كلمتي السر");
             const refBy = new URLSearchParams(window.location.search).get('id');
             try {
                 const res = await auth.createUserWithEmailAndPassword(p+"@zad.com", s);
                 const rid = "ZAD" + Math.floor(1000 + Math.random() * 9000);
-                await db.collection("users").doc(res.user.uid).set({ name:n, phone:p, refId:rid, balance:0, refs:0, refProfit:0, invitedBy:refBy||"none", lastDaily:0, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-                localStorage.setItem('zad_active', 'true'); location.reload();
+                await db.collection("users").doc(res.user.uid).set({ 
+                    name:n, phone:p, refId:rid, balance:0, refs:0, refProfit:0, invitedBy:refBy||"none", lastDaily:0, createdAt: firebase.firestore.FieldValue.serverTimestamp() 
+                });
             } catch(e) { alert(e.message); }
         }
 
@@ -205,127 +276,4 @@
             };
         }
 
-        async function buyPlan(planName, price, dailyProfit) {
-            if(currentUser.balance < price) return alert("رصيدك غير كافي، اشحن USDT أولاً");
-            if(confirm(`هل تريد تفعيل ${planName}؟`)) {
-                await db.collection("users").doc(auth.currentUser.uid).update({ balance: firebase.firestore.FieldValue.increment(-price) });
-                await db.collection("active_plans").add({ uid: auth.currentUser.uid, planName, dailyProfit, lastCollected: Date.now(), expiresAt: Date.now()+(10*24*60*60*1000) });
-                alert("تم تفعيل الخدمة!"); location.reload();
-            }
-        }
-
-        async function checkProfits() {
-            const q = await db.collection("active_plans").where("uid", "==", auth.currentUser.uid).get();
-            const now = Date.now();
-            q.forEach(async doc => {
-                const p = doc.data();
-                if(now > p.expiresAt) { await db.collection("active_plans").doc(doc.id).delete(); }
-                else if(now - p.lastCollected >= 86400000) {
-                    await db.collection("users").doc(auth.currentUser.uid).update({ balance: firebase.firestore.FieldValue.increment(p.dailyProfit) });
-                    await db.collection("active_plans").doc(doc.id).update({ lastCollected: now });
-                }
-            });
-        }
-
-        async function handleWithdraw() {
-            const amt = Number(document.getElementById('wAmount').value), wall = document.getElementById('wWallet').value;
-            if(amt < 10 || currentUser.balance < amt) return alert("أقل مبلغ سحب 10$ أو رصيدك لا يكفي");
-            await db.collection("withdrawals").add({ uid:auth.currentUser.uid, uName:currentUser.name, amount:amt, wallet:wall, status:"pending", createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-            await db.collection("users").doc(auth.currentUser.uid).update({ balance: firebase.firestore.FieldValue.increment(-amt) });
-            alert("طلب السحب قيد التنفيذ"); location.reload();
-        }
-
-        function loadAdminPanel() {
-            if(currentUser.phone !== ADMIN_PHONE) return;
-            document.getElementById('adminArea').innerHTML = `
-                <div style="background:#111; border:2px solid gold; margin-top:20px; padding:15px; border-radius:15px; text-align:right;">
-                <h3 style="color:gold">لوحة الإدارة 👑</h3>
-                <h4>طلبات USDT</h4><div id="depList"></div>
-                <hr><h4>سحوبات USDT</h4><div id="withList"></div></div>`;
-            db.collection("deposits").where("status", "==", "pending").onSnapshot(snap => {
-                let h = ''; snap.forEach(doc => { const d = doc.data(); h += `<div style="border-bottom:1px solid #333; padding:10px 0;">${d.uName} (${d.amount}$) <br> TXID: ${d.txid} <br><img src="${d.image}" style="width:80px;" onclick="window.open(this.src)"><br><button class="btn" style="width:auto; padding:5px;" onclick="approveDep('${doc.id}','${d.uid}',${d.amount},'${d.invitedBy}')">موافق</button></div>`; });
-                document.getElementById('depList').innerHTML = h || 'لا يوجد';
-            });
-            db.collection("withdrawals").where("status", "==", "pending").onSnapshot(snap => {
-                let h = ''; snap.forEach(doc => { const d = doc.data(); h += `<div style="border-bottom:1px solid #333; padding:10px 0;">${d.uName} (${d.amount}$) <br> محفظة: ${d.wallet} <br><button class="btn" style="width:auto; padding:5px; background:green;" onclick="doneWith('${doc.id}')">تم السحب</button></div>`; });
-                document.getElementById('withList').innerHTML = h || 'لا يوجد';
-            });
-        }
-
-        async function approveDep(docId, uid, amt, invBy) {
-            await db.collection("users").doc(uid).update({ balance: firebase.firestore.FieldValue.increment(amt) });
-            if(invBy !== "none") {
-                const q = await db.collection("users").where("refId", "==", invBy).get();
-                if(!q.empty) {
-                    const comm = amt * 0.1;
-                    await db.collection("users").doc(q.docs[0].id).update({ balance: firebase.firestore.FieldValue.increment(comm), refProfit: firebase.firestore.FieldValue.increment(comm) });
-                }
-            }
-            await db.collection("deposits").doc(docId).update({ status: "approved" });
-            alert("تم شحن الرصيد!");
-        }
-        async function doneWith(docId) { await db.collection("withdrawals").doc(docId).update({ status: "completed" }); alert("تم السحب"); }
-
-        async function collectDaily() {
-            const now = Date.now();
-            if(now - (currentUser.lastDaily||0) < 86400000) return alert("باقي وقت على المكافأة");
-            await db.collection("users").doc(auth.currentUser.uid).update({ balance: firebase.firestore.FieldValue.increment(0.50), lastDaily: now });
-            alert("تم جمع 0.50$"); location.reload();
-        }
-
-        function tab(id, b) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active-sec')); document.getElementById(id).classList.add('active-sec'); document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); document.getElementById(b).classList.add('active'); }
-        function openQuickDep() { document.getElementById('depPage').style.display='flex'; }
-        function closeAll() { document.getElementById('depPage').style.display='none'; }
-        function toggleForm(r) { document.getElementById('loginForm').classList.toggle('hidden', r); document.getElementById('regForm').classList.toggle('hidden', !r); }
-        function logout() { auth.signOut(); localStorage.setItem('zad_active', 'false'); location.reload(); }
-        function copyRef() { navigator.clipboard.writeText(document.getElementById('refLinkDisplay').innerText); alert("تم النسخ"); }
-        function copyNum() { navigator.clipboard.writeText("TCCA7LzPh4b6KhFPHkTPTtxwRNm6En2fqA"); alert("عنوان USDT اتنسخ"); }
-
-        window.onload = () => {
-            document.getElementById('loader').style.display='none';
-            if(localStorage.getItem('zad_active') === 'true') {
-                document.getElementById('authPage').classList.add('hidden');
-                document.getElementById('mainApp').classList.remove('hidden');
-                auth.onAuthStateChanged(async user => {
-                    if(user) {
-                        const d = await db.collection("users").doc(user.uid).get();
-                        currentUser = d.data();
-                        document.getElementById('balDisplay').innerText = currentUser.balance.toFixed(2);
-                        document.getElementById('uNameDisplay').innerText = currentUser.name;
-                        document.getElementById('uPhoneDisplay').innerText = currentUser.phone;
-                        document.getElementById('refCounter').innerText = currentUser.refs;
-                        document.getElementById('refProfit').innerText = (currentUser.refProfit||0).toFixed(2);
-                        document.getElementById('refLinkDisplay').innerText = window.location.href.split('?')[0] + "?id=" + currentUser.refId;
-                        if(currentUser.phone === ADMIN_PHONE) loadAdminPanel();
-                        renderPlans(); checkProfits();
-                    }
-                });
-            }
-        };
-
-        async function renderPlans() {
-            const myPlans = await db.collection("active_plans").where("uid", "==", auth.currentUser.uid).get();
-            const activeNames = []; myPlans.forEach(doc => activeNames.push(doc.data().planName));
-            
-            // الباقات بأسعار (25، 75، 150، 300، 500، 1000) وربح 30% يومياً
-            const plans = [
-                {n: "باقة 25$", p: 25, r: 7.5, i: "https://images.pexels.com/photos/259027/pexels-photo-259027.jpeg?auto=compress&w=300"},
-                {n: "باقة 75$", p: 75, r: 22.5, i: "https://images.pexels.com/photos/5466785/pexels-photo-5466785.jpeg?auto=compress&w=300"},
-                {n: "باقة 150$", p: 150, r: 45, i: "https://images.pexels.com/photos/259165/pexels-photo-259165.jpeg?auto=compress&w=300"},
-                {n: "باقة 300$", p: 300, r: 90, i: "https://images.pexels.com/photos/318820/pexels-photo-318820.jpeg?auto=compress&w=300"},
-                {n: "باقة 500$", p: 500, r: 150, i: "https://images.pexels.com/photos/4386339/pexels-photo-4386339.jpeg?auto=compress&w=300"},
-                {n: "باقة 1000$", p: 1000, r: 300, i: "https://images.pexels.com/photos/5849559/pexels-photo-5849559.jpeg?auto=compress&w=300"}
-            ];
-            
-            let html = '';
-            plans.forEach(x => {
-                let btn = `<button class="btn" onclick="buyPlan('${x.n}', ${x.p}, ${x.r})">تفعيل الخدمة</button>`;
-                if(activeNames.includes(x.n)) btn = `<button class="btn" style="background:green; color:white;" disabled>مفعلة الآن</button>`;
-                
-                html += `<div class="card"><img src="${x.i}"><div style="padding:10px; text-align:center;"><h3 style="font-size:0.8rem; margin:0; color:var(--primary)">${x.n}</h3><div style="font-weight:900; margin:5px 0;">${x.p} $</div><div style="font-size:0.6rem; color:#2ecc71; margin-bottom:5px;">الربح اليومي: ${x.r} $<br>لمدة 10 أيام</div>${btn}</div></div>`;
-            });
-            document.getElementById('plansRoot').innerHTML = html;
-        }
-    </script>
-</body>
-</html>
+        a
