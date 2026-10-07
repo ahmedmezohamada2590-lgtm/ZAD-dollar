@@ -5,6 +5,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-storage-compat.js"></script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,16 +14,13 @@
     <!-- Tailwind CSS & FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-        }
+        tailwind.config = { darkMode: 'class' }
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
     <style>
         body { font-family: 'Cairo', 'Inter', sans-serif; user-select: none; transition: background-color 0.3s, color 0.3s; }
-        
         .spinner { 
             width: 42px; 
             height: 42px; 
@@ -32,7 +30,6 @@
             animation: spin 0.8s linear infinite; 
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-
         .ticker-move { display: inline-block; animation: ticker 30s linear infinite; }
         @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     </style>
@@ -61,7 +58,7 @@
                 <i class="fas fa-cubes text-3xl"></i>
             </div>
             <h1 class="text-2xl font-black text-[#037B46] mb-1">ZAD SERVICES</h1>
-            <p data-i18n="authSubtitle" class="text-xs text-gray-400 dark:text-gray-400 mb-6">المنصة العالمية المعتمدة لخدمات واستثمار الكريبتو</p>
+            <p class="text-xs text-gray-400 dark:text-gray-400 mb-6">المنصة العالمية المعتمدة لخدمات واستثمار الكريبتو</p>
             
             <div id="loginForm" class="space-y-4">
                 <input type="number" id="lPhone" placeholder="رقم الهاتف" class="w-full px-4 py-3.5 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-900 text-center text-sm focus:outline-none focus:ring-2 focus:ring-[#037B46]">
@@ -101,7 +98,6 @@
                     <i class="fas fa-wallet text-xs"></i> <span id="balDisplay">0.00</span> $
                 </div>
                 
-                <!-- Notification Bell -->
                 <div class="relative">
                     <button onclick="toggleNotifications()" class="text-gray-500 dark:text-gray-300 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-sm relative">
                         <i class="fas fa-bell"></i>
@@ -116,18 +112,11 @@
                 </div>
             </div>
 
-            <!-- Brand Logo -->
             <div class="font-black text-[#037B46] text-base tracking-wide flex items-center gap-1">
                 <i class="fas fa-shield-halved text-sm"></i> ZAD
             </div>
 
             <div class="flex items-center gap-2">
-                <!-- Language Switcher -->
-                <button onclick="toggleLanguage()" class="text-xs font-bold px-2.5 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-full hover:bg-gray-200 transition-colors" id="langBtn">
-                    EN
-                </button>
-
-                <!-- Dark Mode Toggle -->
                 <button onclick="toggleDarkMode()" class="text-gray-500 dark:text-yellow-400 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-sm">
                     <i id="themeIcon" class="fas fa-moon"></i>
                 </button>
@@ -138,7 +127,6 @@
         <!-- Home Section -->
         <div id="homeSec" class="section p-4 max-w-xl mx-auto space-y-4">
             
-            <!-- Global SAFU Protection Banner -->
             <div class="bg-gradient-to-r from-emerald-900 to-gray-900 text-white p-3.5 rounded-[20px] shadow-sm flex items-center justify-between border border-emerald-500/20">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center text-emerald-400 text-lg">
@@ -152,7 +140,6 @@
                 <span class="text-[9px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono">VERIFIED</span>
             </div>
 
-            <!-- User VIP Tier Status Card -->
             <div class="bg-white dark:bg-gray-800 p-4 rounded-[22px] border border-gray-100 dark:border-gray-700 shadow-sm flex items-center justify-between">
                 <div>
                     <span class="text-[10px] text-gray-400 block">مستوى العضوية الحالي</span>
@@ -166,7 +153,6 @@
                 </div>
             </div>
 
-            <!-- Daily Reward Card -->
             <div class="bg-white dark:bg-gray-800 p-4 rounded-[20px] border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col justify-between">
                 <div>
                     <h4 class="font-bold text-xs text-gray-800 dark:text-gray-100"><i class="fas fa-gift text-amber-500 ml-1"></i> مكافأة يومية</h4>
@@ -175,14 +161,13 @@
                 <button id="dailyBtn" class="bg-[#037B46] hover:bg-[#026237] text-white text-xs font-bold py-2 rounded-full transition-colors shadow-sm mt-3" onclick="collectDaily()">جمع 0.50$</button>
             </div>
 
-            <!-- Live Market Widget (شاشة تداول كريبتو تفاعلية) -->
+            <!-- Live Market Widget -->
             <div class="bg-gray-900 text-white p-4 rounded-[24px] shadow-md space-y-3 border border-gray-800">
                 <div class="flex justify-between items-center text-xs">
                     <span class="font-bold flex items-center gap-1.5"><i class="fas fa-chart-line text-green-400"></i> سوق الكريبتو المباشر</span>
                     <span class="text-[10px] text-gray-400 font-mono">LIVE MARKET DATA</span>
                 </div>
                 
-                <!-- Simulated Live Mini Chart / Trading Stats -->
                 <div class="grid grid-cols-3 gap-2 text-center pt-1 border-t border-gray-800">
                     <div class="bg-gray-800/60 p-2 rounded-xl">
                         <small class="text-[9px] text-gray-400 block">BTC/USDT</small>
@@ -202,7 +187,7 @@
                 </div>
             </div>
 
-            <!-- Profit Calculator (حاسبة الأرباح التفاعلية) -->
+            <!-- Profit Calculator -->
             <div class="bg-gradient-to-br from-green-900 to-[#037B46] text-white p-5 rounded-[24px] shadow-sm space-y-3">
                 <div class="flex justify-between items-center">
                     <h4 class="font-extrabold text-sm"><i class="fas fa-calculator ml-1"></i> حاسبة الأرباح التفاعلية</h4>
@@ -226,53 +211,6 @@
 
             <!-- Investment Plans Grid -->
             <div class="grid grid-cols-2 gap-3" id="plansRoot"></div>
-
-            <!-- How to Start in 3 Steps (دليل البدء في 3 خطوات) -->
-            <div class="bg-white dark:bg-gray-800 p-4 rounded-[22px] border border-gray-100 dark:border-gray-700 space-y-3">
-                <h4 class="font-bold text-xs text-[#037B46]"><i class="fas fa-rocket ml-1"></i> كيف تبدأ في 3 خطوات بسيطة؟</h4>
-                <div class="grid grid-cols-3 gap-2 text-center text-[10px]">
-                    <div class="bg-[#FAF9F5] dark:bg-gray-900 p-2.5 rounded-xl border border-gray-100 dark:border-gray-700">
-                        <span class="w-6 h-6 rounded-full bg-[#037B46] text-white font-bold inline-flex items-center justify-center mb-1">1</span>
-                        <b class="block text-gray-800 dark:text-gray-200">إيداع USDT</b>
-                        <span class="text-gray-400">عبر شبكة TRC20</span>
-                    </div>
-                    <div class="bg-[#FAF9F5] dark:bg-gray-900 p-2.5 rounded-xl border border-gray-100 dark:border-gray-700">
-                        <span class="w-6 h-6 rounded-full bg-[#037B46] text-white font-bold inline-flex items-center justify-center mb-1">2</span>
-                        <b class="block text-gray-800 dark:text-gray-200">تفعيل الباقة</b>
-                        <span class="text-gray-400">اختر الخطه المناسبة</span>
-                    </div>
-                    <div class="bg-[#FAF9F5] dark:bg-gray-900 p-2.5 rounded-xl border border-gray-100 dark:border-gray-700">
-                        <span class="w-6 h-6 rounded-full bg-[#037B46] text-white font-bold inline-flex items-center justify-center mb-1">3</span>
-                        <b class="block text-gray-800 dark:text-gray-200">سحب يومي</b>
-                        <span class="text-gray-400">استلم أرباحك فوراً</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Strategic Global Partners Banner -->
-            <div class="bg-white dark:bg-gray-800 p-4 rounded-[22px] border border-gray-100 dark:border-gray-700 text-center space-y-2">
-                <span class="text-[10px] text-gray-400 font-bold block">شبكات التداول والشركاء المعتمدون</span>
-                <div class="flex justify-around items-center text-gray-400 text-lg pt-1">
-                    <span class="font-bold font-mono hover:text-[#037B46] text-xs"><i class="fab fa-bitcoin text-amber-500"></i> BINANCE</span>
-                    <span class="font-bold font-mono hover:text-[#037B46] text-xs"><i class="fas fa-coins text-[#037B46]"></i> TRON TRC20</span>
-                    <span class="font-bold font-mono hover:text-[#037B46] text-xs"><i class="fas fa-shield-alt text-blue-500"></i> TRUST WALLET</span>
-                </div>
-            </div>
-
-            <!-- FAQ Section -->
-            <div class="bg-white dark:bg-gray-800 p-4 rounded-[22px] border border-gray-100 dark:border-gray-700 space-y-3 text-right">
-                <h4 class="font-bold text-xs text-[#037B46] mb-2"><i class="fas fa-question-circle"></i> الأسئلة الشائعة</h4>
-                
-                <details class="text-xs bg-[#FAF9F5] dark:bg-gray-900 p-2.5 rounded-xl border border-gray-100 dark:border-gray-700 cursor-pointer">
-                    <summary class="font-bold text-gray-700 dark:text-gray-200">كيف يتم احتساب الأرباح؟</summary>
-                    <p class="text-gray-500 dark:text-gray-400 mt-1.5 leading-relaxed">تضاف الأرباح بنسبة 30% يومياً لكل الباقات المفعلة تلقائياً في رصيدك كل 24 ساعة.</p>
-                </details>
-
-                <details class="text-xs bg-[#FAF9F5] dark:bg-gray-900 p-2.5 rounded-xl border border-gray-100 dark:border-gray-700 cursor-pointer">
-                    <summary class="font-bold text-gray-700 dark:text-gray-200">كم الحد الأدنى للسحب والإيداع؟</summary>
-                    <p class="text-gray-500 dark:text-gray-400 mt-1.5 leading-relaxed">الحد الأدنى للشحن والسحب هو 10$ عبر شبكة TRC20.</p>
-                </details>
-            </div>
         </div>
 
         <!-- Referral Section -->
@@ -286,30 +224,9 @@
                 <div id="refLinkDisplay" class="bg-[#FAF9F5] dark:bg-gray-900 p-3 rounded-xl text-xs font-mono text-[#037B46] border border-dashed border-gray-200 dark:border-gray-700 break-all"></div>
                 <button class="w-full py-3 bg-[#037B46] hover:bg-[#026237] text-white font-bold rounded-full transition-colors text-xs" onclick="copyRef()">نسخ الرابط</button>
                 
-                <!-- Social Share Buttons -->
-                <div class="flex justify-center gap-3 pt-1">
-                    <button onclick="shareSocial('wa')" class="bg-green-500 hover:bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center text-lg"><i class="fab fa-whatsapp"></i></button>
-                    <button onclick="shareSocial('tg')" class="bg-blue-500 hover:bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center text-lg"><i class="fab fa-telegram-plane"></i></button>
-                    <button onclick="shareSocial('fb')" class="bg-blue-700 hover:bg-blue-800 text-white w-10 h-10 rounded-full flex items-center justify-center text-lg"><i class="fab fa-facebook-f"></i></button>
-                </div>
-
                 <div class="flex justify-around pt-2 border-t border-gray-50 dark:border-gray-700">
                     <div><span id="refCounter" class="text-xl font-extrabold text-[#037B46]">0</span><br><small class="text-gray-400 text-xs">أصدقاء</small></div>
-                    <div><span id="refProfit" class="text-xl font-extrabold text-green-600">0</span>$<br><small class="text-gray-400 text-xs">أرباح</small></div>
-                </div>
-            </div>
-
-            <!-- Level Achievements & Rewards Box -->
-            <div class="bg-white dark:bg-gray-800 p-5 rounded-[24px] border border-gray-100 dark:border-gray-700 text-right space-y-3">
-                <h4 class="font-bold text-xs text-[#037B46]"><i class="fas fa-trophy text-amber-500 ml-1"></i> مكافآت الإنجاز المباشرة</h4>
-                <div class="space-y-2 text-xs">
-                    <div class="flex justify-between items-center bg-[#FAF9F5] dark:bg-gray-900 p-2.5 rounded-xl">
-                        <div>
-                            <b class="block text-gray-800 dark:text-gray-200">دعوة 5 أعضاء نشطين</b>
-                            <span class="text-gray-400 text-[10px]">احصل على بونص 5.00$</span>
-                        </div>
-                        <button onclick="claimAchievement(5)" class="bg-[#037B46] text-white px-3 py-1 rounded-full text-[10px] font-bold">طالب الآن</button>
-                    </div>
+                    <div><span id="refProfit" class="text-xl font-extrabold text-green-600">0.00</span>$<br><small class="text-gray-400 text-xs">أرباح</small></div>
                 </div>
             </div>
         </div>
@@ -358,7 +275,7 @@
                 <button class="w-full py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-full transition-colors text-xs mt-2" onclick="logout()">تسجيل الخروج</button>
             </div>
 
-            <!-- Profit Countdown Timer (العداد التنازلي) -->
+            <!-- Profit Countdown Timer -->
             <div class="bg-white dark:bg-gray-800 p-4 rounded-[22px] border border-gray-100 dark:border-gray-700 text-right space-y-2">
                 <div class="flex justify-between items-center">
                     <h4 class="text-[#037B46] font-bold text-xs"><i class="fas fa-clock ml-1"></i> العداد التنازلي لإضافة الربح القادم:</h4>
@@ -366,21 +283,19 @@
                 </div>
             </div>
 
-            <!-- Active Plans -->
             <div class="text-right space-y-2">
                 <h4 class="text-[#037B46] font-bold text-xs">📊 باقاتي النّشطة:</h4>
                 <div id="myActivePlans" class="space-y-2"></div>
             </div>
 
-            <!-- Financial Ledger (سجل المعاملات المالي التفصيلي) -->
             <div class="bg-white dark:bg-gray-800 p-4 rounded-[22px] border border-gray-100 dark:border-gray-700 text-right space-y-3">
-                <h4 class="text-[#037B46] font-bold text-xs"><i class="fas fa-list-alt ml-1"></i> سجل المعاملات الدّاخلية (Ledger):</h4>
+                <h4 class="text-[#037B46] font-bold text-xs"><i class="fas fa-list-alt ml-1"></i> سجل المعاملات الدّاخلية:</h4>
                 <div id="ledgerList" class="space-y-2 text-xs">
                     <p class="text-center text-gray-400 py-3">لا توجد معاملات مسجلة بعد</p>
                 </div>
             </div>
             
-            <!-- Admin Dashboard -->
+            <!-- Admin Area -->
             <div id="adminArea" class="hidden text-right space-y-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <h3 class="text-[#037B46] font-bold text-base"><i class="fas fa-user-shield"></i> لوحة تحكم الأدمن</h3>
                 <div>
@@ -425,15 +340,9 @@
     </div>
 
     <script>
-        // Language Switcher Function
-        let currentLang = 'AR';
-        function toggleLanguage() {
-            currentLang = currentLang === 'AR' ? 'EN' : 'AR';
-            document.getElementById('langBtn').innerText = currentLang === 'AR' ? 'EN' : 'عربي';
-            document.documentElement.dir = currentLang === 'AR' ? 'rtl' : 'ltr';
-        }
+        const urlParams = new URLSearchParams(window.location.search);
+        const refCodeFromUrl = urlParams.get('id');
 
-        // Tab Navigation Function
         function switchTab(secId, btnId) {
             document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
             document.querySelectorAll('.fixed.bottom-0 > div').forEach(b => {
@@ -451,53 +360,30 @@
             }
         }
 
-        // Deposit Modal Actions
-        function openDepModal() {
-            const modal = document.getElementById('depPage');
-            if(modal) {
-                modal.classList.remove('hidden');
-                modal.style.display = 'flex';
-            }
-        }
+        function openDepModal() { document.getElementById('depPage')?.classList.remove('hidden'); }
+        function closeDepModal() { document.getElementById('depPage')?.classList.add('hidden'); }
 
-        function closeDepModal() {
-            const modal = document.getElementById('depPage');
-            if(modal) {
-                modal.classList.add('hidden');
-                modal.style.display = 'none';
-            }
-        }
-
-        // Dark Mode Toggle
         function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
             const icon = document.getElementById('themeIcon');
-            if(document.documentElement.classList.contains('dark')) {
-                icon.classList.remove('fa-moon');
-                icon.classList.add('fa-sun');
-            } else {
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-moon');
+            if (icon) {
+                icon.className = document.documentElement.classList.contains('dark') ? 'fas fa-sun' : 'fas fa-moon';
             }
         }
 
-        // Notifications Toggle
         function toggleNotifications() {
-            const dropdown = document.getElementById('notifDropdown');
-            dropdown.classList.toggle('hidden');
-            document.getElementById('notifBadge').classList.add('hidden');
+            document.getElementById('notifDropdown')?.classList.toggle('hidden');
+            document.getElementById('notifBadge')?.classList.add('hidden');
         }
 
-        // Profit Calculator Logic
         function calculateProfit() {
-            const val = parseFloat(document.getElementById('calcInput').value) || 0;
+            const val = parseFloat(document.getElementById('calcInput')?.value) || 0;
             const daily = val * 0.30;
             const monthly = daily * 30;
-            document.getElementById('calcDaily').innerText = `${daily.toFixed(2)} $`;
-            document.getElementById('calcMonthly').innerText = `${monthly.toFixed(2)} $`;
+            if(document.getElementById('calcDaily')) document.getElementById('calcDaily').innerText = `${daily.toFixed(2)} $`;
+            if(document.getElementById('calcMonthly')) document.getElementById('calcMonthly').innerText = `${monthly.toFixed(2)} $`;
         }
 
-        // Profit Countdown Timer
         function startCountdown() {
             setInterval(() => {
                 const now = new Date();
@@ -508,32 +394,33 @@
                 const mins = Math.floor((diff / (1000 * 60)) % 60);
                 const secs = Math.floor((diff / 1000) % 60);
 
-                document.getElementById('countdownTimer').innerText = 
-                    `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                const timerEl = document.getElementById('countdownTimer');
+                if (timerEl) {
+                    timerEl.innerText = `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                }
             }, 1000);
         }
         startCountdown();
 
-        // Social Share Function
-        function shareSocial(platform) {
-            const link = document.getElementById('refLinkDisplay').innerText;
-            const msg = encodeURIComponent(`انضم إلى منصة ZAD SERVICES واستثمر بثقة! رابط التسجيل:\n${link}`);
-            let url = '';
-            
-            if(platform === 'wa') url = `https://api.whatsapp.com/send?text=${msg}`;
-            else if(platform === 'tg') url = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${msg}`;
-            else if(platform === 'fb') url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`;
-            
-            window.open(url, '_blank');
-        }
+        function startLivePrices() {
+            setInterval(() => {
+                const btc = 68450 + (Math.random() * 60 - 30);
+                const eth = 3520 + (Math.random() * 10 - 5);
+                const btcStr = `$${btc.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                const ethStr = `$${eth.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
-        // Hide Loader
+                ['liveBtc', 'chartBtc'].forEach(id => { const el = document.getElementById(id); if(el) el.innerText = btcStr; });
+                ['liveEth', 'chartEth'].forEach(id => { const el = document.getElementById(id); if(el) el.innerText = ethStr; });
+            }, 3000);
+        }
+        startLivePrices();
+
         setTimeout(() => {
             const loader = document.getElementById('loader');
             if (loader) loader.style.display = 'none';
         }, 1200);
 
-        // Firebase Setup
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBCBGKC1uqEcJTqyt-tcc2pSp17G9ttL4g",
             authDomain: "zad-dollar.firebaseapp.com",
@@ -544,7 +431,10 @@
         };
 
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth(), db = firebase.firestore();
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+        
         let currentUser = {};
         const ADMIN_PHONE = "01098235032";
 
@@ -579,7 +469,7 @@
         async function buyPlan(planId) {
             const p = plans.find(item => item.id === planId);
             if (!p) return;
-            const userBalance = currentUser.balance || 0;
+            const userBalance = Number(currentUser.balance) || 0;
 
             if (userBalance < p.price) {
                 if (confirm(`رصيدك الحالي (${userBalance.toFixed(2)}$) لا يكفي لتفعيل ${p.name}. هل تريد الانتقال لصفحة الشحن؟`)) {
@@ -607,7 +497,6 @@
                     status: "active"
                 });
 
-                // Ledger Entry
                 await db.collection("ledger").add({
                     uid: auth.currentUser.uid,
                     type: "شراء باقة",
@@ -618,102 +507,389 @@
 
                 alert(`تم تفعيل ${p.name} بنجاح!`);
             } catch (e) {
-                alert("حدث خطأ أثناء التفعيل");
+                alert("حدث خطأ أثناء التفعيل: " + e.message);
             }
         }
 
+        async function collectDaily() {
+            if(!auth.currentUser) return;
+            const uid = auth.currentUser.uid;
+            const now = Date.now();
+            const lastClaim = currentUser.lastDailyClaim || 0;
+            const hoursPassed = (now - lastClaim) / (1000 * 60 * 60);
+
+            if(hoursPassed < 24) {
+                const hoursLeft = Math.ceil(24 - hoursPassed);
+                alert(`لقد جمعت المكافأة اليومية بالفعل! يرجى الانتظار ${hoursLeft} ساعة.`);
+                return;
+            }
+
+            const btn = document.getElementById('dailyBtn');
+            if(btn) btn.disabled = true;
+
+            try {
+                await db.collection("users").doc(uid).update({
+                    balance: firebase.firestore.FieldValue.increment(0.50),
+                    lastDailyClaim: now
+                });
+
+                await db.collection("ledger").add({
+                    uid: uid,
+                    type: "مكافأة يومية",
+                    amount: 0.50,
+                    title: "جمع المكافأة اليومية (0.50$)",
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert("تم جمع 0.50$ بنجاح وإضافتها لرصيدك!");
+            } catch(e) {
+                alert("حدث خطأ أثناء جمع المكافأة: " + e.message);
+            } finally {
+                if(btn) btn.disabled = false;
+            }
+        }
+
+        async function handleDeposit() {
+            const amt = parseFloat(document.getElementById('qAmt').value);
+            const txid = (document.getElementById('sPhone').value || '').trim();
+            const fileInput = document.getElementById('sImg');
+
+            if(!amt || amt < 10) return alert("الحد الأدنى للشحن هو 10$");
+            if(!txid) return alert("يرجى إدخال رقم العملية أو الـ TXID");
+
+            const btn = document.getElementById('confBtn');
+            if(btn) { btn.innerText = "جاري الإرسال..."; btn.disabled = true; }
+
+            try {
+                let imgUrl = "";
+                if(fileInput && fileInput.files && fileInput.files[0]) {
+                    const file = fileInput.files[0];
+                    const ref = storage.ref(`deposits/${auth.currentUser.uid}_${Date.now()}_${file.name}`);
+                    await ref.put(file);
+                    imgUrl = await ref.getDownloadURL();
+                }
+
+                await db.collection("deposits").add({
+                    uid: auth.currentUser.uid,
+                    userName: currentUser.name || "مستخدم",
+                    userPhone: currentUser.phone || "",
+                    amount: amt,
+                    txid: txid,
+                    proofImg: imgUrl,
+                    status: "pending",
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert("تم إرسال طلب الإيداع بنجاح!");
+                closeDepModal();
+                if(document.getElementById('qAmt')) document.getElementById('qAmt').value = '';
+                if(document.getElementById('sPhone')) document.getElementById('sPhone').value = '';
+            } catch(e) {
+                alert("حدث خطأ أثناء تقديم الإيداع: " + e.message);
+            } finally {
+                if(btn) { btn.innerText = "تأكيد الشحن"; btn.disabled = false; }
+            }
+        }
+
+        async function handleWithdraw() {
+            const amt = parseFloat(document.getElementById('wAmount').value);
+            const wallet = (document.getElementById('wWallet').value || '').trim();
+
+            if(!amt || amt < 10) return alert("الحد الأدنى للسحب هو 10$");
+            if(!wallet) return alert("يرجى إدخال عنوان محفظة TRC20");
+            if(amt > (Number(currentUser.balance) || 0)) return alert("رصيدك الحالي غير كافٍ للسحب");
+
+            const btn = document.getElementById('withdrawBtn');
+            if(btn) { btn.disabled = true; btn.innerText = "جاري تنفيذ الطلب..."; }
+
+            try {
+                await db.collection("users").doc(auth.currentUser.uid).update({
+                    balance: firebase.firestore.FieldValue.increment(-amt)
+                });
+
+                await db.collection("withdrawals").add({
+                    uid: auth.currentUser.uid,
+                    userName: currentUser.name || "مستخدم",
+                    userPhone: currentUser.phone || "",
+                    amount: amt,
+                    wallet: wallet,
+                    status: "pending",
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                await db.collection("ledger").add({
+                    uid: auth.currentUser.uid,
+                    type: "طلب سحب",
+                    amount: -amt,
+                    title: `طلب سحب إلى محفظة (${wallet.substring(0, 6)}...)`,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert("تم إرسال طلب السحب بنجاح!");
+                if(document.getElementById('wAmount')) document.getElementById('wAmount').value = '';
+                if(document.getElementById('wWallet')) document.getElementById('wWallet').value = '';
+            } catch(e) {
+                alert("حدث خطأ أثناء إرسال طلب السحب: " + e.message);
+            } finally {
+                if(btn) { btn.disabled = false; btn.innerText = "طلب سحب الآن"; }
+            }
+        }
+
+        function switchLogTab(tab) {
+            const wHist = document.getElementById('userWithdrawHistory');
+            const dHist = document.getElementById('userDepositHistory');
+            const btnW = document.getElementById('tabWBtn');
+            const btnD = document.getElementById('tabDBtn');
+
+            if(tab === 'w') {
+                wHist?.classList.remove('hidden');
+                dHist?.classList.add('hidden');
+                if(btnW) btnW.className = "flex-1 py-2 border-b-2 border-[#037B46] text-[#037B46]";
+                if(btnD) btnD.className = "flex-1 py-2 text-gray-400";
+            } else {
+                wHist?.classList.add('hidden');
+                dHist?.classList.remove('hidden');
+                if(btnD) btnD.className = "flex-1 py-2 border-b-2 border-[#037B46] text-[#037B46]";
+                if(btnW) btnW.className = "flex-1 py-2 text-gray-400";
+            }
+        }
+
+        // Auth Listener
         auth.onAuthStateChanged(user => {
             if(user) {
-                document.getElementById('authPage').classList.add('hidden');
-                document.getElementById('mainApp').classList.remove('hidden');
+                document.getElementById('authPage')?.classList.add('hidden');
+                document.getElementById('mainApp')?.classList.remove('hidden');
                 
+                // Realtime User Data Listener
                 db.collection("users").doc(user.uid).onSnapshot(doc => {
                     if(doc.exists) {
-                        currentUser = doc.data();
-                        const b = (currentUser.balance || 0).toFixed(2);
-                        document.getElementById('balDisplay').innerText = b;
-                        document.getElementById('statBalance').innerText = `${b} $`;
-                        document.getElementById('uNameDisplay').innerText = currentUser.name || "مستخدم ZAD";
-                        document.getElementById('uPhoneDisplay').innerText = currentUser.phone || "";
-                        document.getElementById('refLinkDisplay').innerText = `${window.location.origin}?id=${currentUser.refId}`;
-                        document.getElementById('refCounter').innerText = currentUser.refs || 0;
-                        document.getElementById('refProfit').innerText = (currentUser.refProfit || 0).toFixed(2);
+                        currentUser = doc.data() || {};
+                        const b = (Number(currentUser.balance) || 0).toFixed(2);
+                        
+                        if(document.getElementById('balDisplay')) document.getElementById('balDisplay').innerText = b;
+                        if(document.getElementById('statBalance')) document.getElementById('statBalance').innerText = `${b} $`;
+                        if(document.getElementById('uNameDisplay')) document.getElementById('uNameDisplay').innerText = currentUser.name || "مستخدم ZAD";
+                        if(document.getElementById('uPhoneDisplay')) document.getElementById('uPhoneDisplay').innerText = currentUser.phone || "";
+                        if(document.getElementById('refLinkDisplay')) document.getElementById('refLinkDisplay').innerText = `${window.location.origin}${window.location.pathname}?id=${currentUser.refId || ''}`;
+                        if(document.getElementById('refCounter')) document.getElementById('refCounter').innerText = currentUser.refs || 0;
+                        if(document.getElementById('refProfit')) document.getElementById('refProfit').innerText = (Number(currentUser.refProfit) || 0).toFixed(2);
 
-                        // VIP Tier Evaluation
-                        const totalBal = currentUser.balance || 0;
+                        const totalBal = Number(currentUser.balance) || 0;
                         let tierName = "VIP 1 Standard";
                         if(totalBal >= 500) tierName = "VIP 4 Diamond 💎";
                         else if(totalBal >= 200) tierName = "VIP 3 Gold 🥇";
                         else if(totalBal >= 50) tierName = "VIP 2 Silver 🥈";
                         
-                        document.getElementById('vipTierName').innerHTML = `<i class="fas fa-crown"></i> ${tierName}`;
+                        if(document.getElementById('vipTierName')) document.getElementById('vipTierName').innerHTML = `<i class="fas fa-crown"></i> ${tierName}`;
 
+                        // Admin Area
                         if(currentUser.phone === ADMIN_PHONE) {
-                            document.getElementById('adminArea').classList.remove('hidden');
+                            document.getElementById('adminArea')?.classList.remove('hidden');
+
+                            db.collection("deposits").where("status", "==", "pending").onSnapshot(snap => {
+                                const list = document.getElementById('adminDepositsList');
+                                if(!list) return;
+                                if(snap.empty) {
+                                    list.innerHTML = `<p class="text-xs text-gray-400 text-center py-2">لا توجد طلبات إيداع معلقة</p>`;
+                                    return;
+                                }
+                                list.innerHTML = '';
+                                snap.forEach(docSnap => {
+                                    const item = docSnap.data();
+                                    const id = docSnap.id;
+                                    list.innerHTML += `
+                                        <div class="bg-[#FAF9F5] dark:bg-gray-900 p-3 rounded-xl border border-gray-200 dark:border-gray-700 text-xs space-y-2">
+                                            <div class="flex justify-between font-bold">
+                                                <span>${item.userName || ''} (${item.userPhone || ''})</span>
+                                                <span class="text-green-600">${(Number(item.amount) || 0).toFixed(2)}$</span>
+                                            </div>
+                                            <p class="text-[10px] text-gray-500 font-mono">TXID: ${item.txid || ''}</p>
+                                            <div class="flex gap-2 pt-1">
+                                                <button onclick="approveDeposit('${id}', '${item.uid}', ${item.amount})" class="flex-1 py-1 bg-green-600 text-white rounded-lg text-[10px] font-bold">قبول</button>
+                                                <button onclick="rejectDeposit('${id}')" class="flex-1 py-1 bg-red-600 text-white rounded-lg text-[10px] font-bold">رفض</button>
+                                            </div>
+                                        </div>
+                                    `;
+                                });
+                            }, err => console.log("Admin Dep Error", err));
                         }
                     }
-                });
+                }, err => console.log("User Snapshot Error:", err));
 
-                // Ledger Listener
-                db.collection("ledger").where("uid", "==", user.uid).orderBy("createdAt", "desc").limit(10).onSnapshot(snap => {
+                // Ledger Listener (Sorted Safely in JS)
+                db.collection("ledger").where("uid", "==", user.uid).onSnapshot(snap => {
                     const lList = document.getElementById('ledgerList');
+                    if(!lList) return;
                     if(snap.empty) {
                         lList.innerHTML = `<p class="text-center text-gray-400 py-3">لا توجد معاملات مسجلة بعد</p>`;
                         return;
                     }
                     lList.innerHTML = '';
-                    snap.forEach(d => {
-                        const data = d.data();
-                        const isPos = data.amount > 0;
+                    const items = snap.docs.map(d => d.data()).sort((a,b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
+                    items.slice(0, 10).forEach(data => {
+                        const amt = Number(data.amount) || 0;
+                        const isPos = amt > 0;
                         lList.innerHTML += `
                             <div class="flex justify-between items-center bg-[#FAF9F5] dark:bg-gray-900 p-2.5 rounded-xl border border-gray-100 dark:border-gray-700">
                                 <div>
-                                    <b class="text-gray-800 dark:text-gray-200 block">${data.title || data.type}</b>
-                                    <small class="text-gray-400">${data.type}</small>
+                                    <b class="text-gray-800 dark:text-gray-200 block">${data.title || data.type || ''}</b>
+                                    <small class="text-gray-400">${data.type || ''}</small>
                                 </div>
-                                <span class="font-extrabold font-mono ${isPos ? 'text-green-600 dark:text-green-400' : 'text-red-500'}">${isPos ? '+' : ''}${data.amount.toFixed(2)} $</span>
+                                <span class="font-extrabold font-mono ${isPos ? 'text-green-600 dark:text-green-400' : 'text-red-500'}">${isPos ? '+' : ''}${amt.toFixed(2)} $</span>
                             </div>
                         `;
                     });
-                });
+                }, err => console.log("Ledger Error", err));
+
+                // Active Plans
+                db.collection("user_plans").where("uid", "==", user.uid).onSnapshot(snap => {
+                    const container = document.getElementById('myActivePlans');
+                    if(!container) return;
+                    if(snap.empty) {
+                        container.innerHTML = `<p class="text-center text-gray-400 text-xs py-2">لا توجد باقات نشطة حالياً</p>`;
+                        return;
+                    }
+                    container.innerHTML = '';
+                    snap.forEach(d => {
+                        const p = d.data();
+                        container.innerHTML += `
+                            <div class="bg-white dark:bg-gray-800 p-3 rounded-2xl border border-gray-100 dark:border-gray-700 flex justify-between items-center text-xs">
+                                <div>
+                                    <b class="text-gray-800 dark:text-gray-100 block">${p.planName || ''}</b>
+                                    <span class="text-gray-400 text-[10px]">الربح: ${(Number(p.dailyProfit) || 0).toFixed(2)}$/يوم</span>
+                                </div>
+                                <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2.5 py-1 rounded-full">نشطة 🟢</span>
+                            </div>
+                        `;
+                    });
+                }, err => console.log("Plans Error", err));
+
+                // Withdrawals History
+                db.collection("withdrawals").where("uid", "==", user.uid).onSnapshot(snap => {
+                    const container = document.getElementById('userWithdrawHistory');
+                    if(!container) return;
+                    if(snap.empty) {
+                        container.innerHTML = `<p class="text-center text-gray-400 text-xs py-3">لا توجد سحوبات مسجلة</p>`;
+                        return;
+                    }
+                    container.innerHTML = '';
+                    const items = snap.docs.map(d => d.data()).sort((a,b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
+                    items.forEach(w => {
+                        const amt = Number(w.amount) || 0;
+                        const wStr = w.wallet || '';
+                        let statusBadge = `<span class="text-amber-500 bg-amber-50 px-2 py-0.5 rounded text-[10px]">قيد الانتظار</span>`;
+                        if(w.status === 'approved') statusBadge = `<span class="text-green-600 bg-green-50 px-2 py-0.5 rounded text-[10px]">مكتمل ✅</span>`;
+                        if(w.status === 'rejected') statusBadge = `<span class="text-red-500 bg-red-50 px-2 py-0.5 rounded text-[10px]">مرفوض ❌</span>`;
+
+                        container.innerHTML += `
+                            <div class="bg-white dark:bg-gray-800 p-3 rounded-xl border border-gray-100 dark:border-gray-700 flex justify-between items-center text-xs">
+                                <div>
+                                    <b class="text-gray-800 dark:text-gray-100 block">سحب ${amt.toFixed(2)}$</b>
+                                    <small class="text-gray-400 block font-mono text-[10px]">${wStr.substring(0, 10)}...</small>
+                                </div>
+                                ${statusBadge}
+                            </div>
+                        `;
+                    });
+                }, err => console.log("Withdrawals Error", err));
+
+                // Deposits History
+                db.collection("deposits").where("uid", "==", user.uid).onSnapshot(snap => {
+                    const container = document.getElementById('userDepositHistory');
+                    if(!container) return;
+                    if(snap.empty) {
+                        container.innerHTML = `<p class="text-center text-gray-400 text-xs py-3">لا توجد إيداعات مسجلة</p>`;
+                        return;
+                    }
+                    container.innerHTML = '';
+                    const items = snap.docs.map(d => d.data()).sort((a,b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
+                    items.forEach(dep => {
+                        const amt = Number(dep.amount) || 0;
+                        let statusBadge = `<span class="text-amber-500 bg-amber-50 px-2 py-0.5 rounded text-[10px]">قيد الانتظار</span>`;
+                        if(dep.status === 'approved') statusBadge = `<span class="text-green-600 bg-green-50 px-2 py-0.5 rounded text-[10px]">مقبول ✅</span>`;
+                        if(dep.status === 'rejected') statusBadge = `<span class="text-red-500 bg-red-50 px-2 py-0.5 rounded text-[10px]">مرفوض ❌</span>`;
+
+                        container.innerHTML += `
+                            <div class="bg-white dark:bg-gray-800 p-3 rounded-xl border border-gray-100 dark:border-gray-700 flex justify-between items-center text-xs">
+                                <div>
+                                    <b class="text-gray-800 dark:text-gray-100 block">إيداع ${amt.toFixed(2)}$</b>
+                                    <small class="text-gray-400 block font-mono text-[10px]">TXID: ${dep.txid || '-'}</small>
+                                </div>
+                                ${statusBadge}
+                            </div>
+                        `;
+                    });
+                }, err => console.log("Deposits Error", err));
 
                 renderPlans();
             } else {
-                document.getElementById('authPage').classList.remove('hidden');
-                document.getElementById('mainApp').classList.add('hidden');
+                document.getElementById('authPage')?.classList.remove('hidden');
+                document.getElementById('mainApp')?.classList.add('hidden');
             }
         });
 
         function toggleForm(isReg) {
-            document.getElementById('loginForm').classList.toggle('hidden', isReg);
-            document.getElementById('regForm').classList.toggle('hidden', !isReg);
+            document.getElementById('loginForm')?.classList.toggle('hidden', isReg);
+            document.getElementById('regForm')?.classList.toggle('hidden', !isReg);
         }
 
         async function handleLogin() {
-            const p = document.getElementById('lPhone').value, s = document.getElementById('lPass').value;
+            const p = (document.getElementById('lPhone').value || '').trim();
+            const s = document.getElementById('lPass').value;
             if(!p || !s) return alert("أدخل كافة البيانات");
-            try { await auth.signInWithEmailAndPassword(p+"@zad.com", s); } catch(e) { alert("بيانات الدخول غير صحيحة"); }
+            try { 
+                await auth.signInWithEmailAndPassword(p+"@zad.com", s); 
+            } catch(e) { 
+                alert("بيانات الدخول غير صحيحة"); 
+            }
         }
 
         async function handleRegister() {
-            const n = document.getElementById('rName').value, p = document.getElementById('rPhone').value, s = document.getElementById('rPass').value, sc = document.getElementById('rPassC').value;
-            if(!n || p.length < 11 || s !== sc) return alert("يرجى التأكد من البيانات وتطابق كلمة السر");
+            const n = (document.getElementById('rName').value || '').trim();
+            const p = (document.getElementById('rPhone').value || '').trim();
+            const s = document.getElementById('rPass').value;
+            const sc = document.getElementById('rPassC').value;
+            
+            if(!n || p.length < 11 || s !== sc) return alert("يرجى التأكد من البيانات وتطابق كلمة السر (رقم الهاتف 11 رقم على الأقل)");
+            
             try {
                 const res = await auth.createUserWithEmailAndPassword(p+"@zad.com", s);
                 const rid = "ZAD" + Math.floor(1000 + Math.random() * 9000);
+                
+                let referredBy = null;
+                if(refCodeFromUrl) {
+                    const refSnap = await db.collection("users").where("refId", "==", refCodeFromUrl).get();
+                    if(!refSnap.empty) {
+                        referredBy = refSnap.docs[0].id;
+                        await db.collection("users").doc(referredBy).update({
+                            refs: firebase.firestore.FieldValue.increment(1)
+                        });
+                    }
+                }
+
                 await db.collection("users").doc(res.user.uid).set({ 
-                    name: n, phone: p, refId: rid, balance: 0, refs: 0, refProfit: 0, createdAt: firebase.firestore.FieldValue.serverTimestamp() 
+                    name: n, 
+                    phone: p, 
+                    refId: rid, 
+                    balance: 0, 
+                    refs: 0, 
+                    refProfit: 0, 
+                    referredBy: referredBy,
+                    achievements: [],
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp() 
                 });
-            } catch(e) { alert(e.message); }
+            } catch(e) { 
+                alert("حدث خطأ أثناء التسجيل: " + e.message); 
+            }
         }
 
         function copyNum() {
-            navigator.clipboard.writeText(document.getElementById('usdtWallet').innerText);
+            navigator.clipboard.writeText(document.getElementById('usdtWallet')?.innerText || '');
             alert("تم نسخ عنوان المحفظة!");
         }
 
         function copyRef() {
-            navigator.clipboard.writeText(document.getElementById('refLinkDisplay').innerText);
+            navigator.clipboard.writeText(document.getElementById('refLinkDisplay')?.innerText || '');
             alert("تم نسخ رابط الإحالة!");
         }
 
