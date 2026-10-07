@@ -35,11 +35,6 @@
 
         .ticker-move { display: inline-block; animation: ticker 30s linear infinite; }
         @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-
-        /* Spin Wheel Style */
-        #wheelCanvas {
-            transition: transform 4s cubic-bezier(0.15, 0.99, 0.18, 0.99);
-        }
     </style>
 </head>
 <body class="bg-[#FAF9F5] dark:bg-gray-900 text-gray-800 dark:text-gray-100 pb-24 min-h-screen">
@@ -171,25 +166,13 @@
                 </div>
             </div>
 
-            <!-- Lucky Wheel & Daily Rewards Split Grid -->
-            <div class="grid grid-cols-2 gap-3">
-                <!-- Daily Reward Card -->
-                <div class="bg-white dark:bg-gray-800 p-4 rounded-[20px] border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col justify-between">
-                    <div>
-                        <h4 class="font-bold text-xs text-gray-800 dark:text-gray-100"><i class="fas fa-gift text-amber-500 ml-1"></i> مكافأة يومية</h4>
-                        <small class="text-gray-400 text-[10px] block mt-1">احصل على 0.50$ مجاناً كل 24 ساعة</small>
-                    </div>
-                    <button id="dailyBtn" class="bg-[#037B46] hover:bg-[#026237] text-white text-xs font-bold py-2 rounded-full transition-colors shadow-sm mt-3" onclick="collectDaily()">جمع 0.50$</button>
+            <!-- Daily Reward Card -->
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-[20px] border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col justify-between">
+                <div>
+                    <h4 class="font-bold text-xs text-gray-800 dark:text-gray-100"><i class="fas fa-gift text-amber-500 ml-1"></i> مكافأة يومية</h4>
+                    <small class="text-gray-400 text-[10px] block mt-1">احصل على 0.50$ مجاناً كل 24 ساعة</small>
                 </div>
-
-                <!-- Lucky Wheel Trigger Card -->
-                <div class="bg-white dark:bg-gray-800 p-4 rounded-[20px] border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col justify-between">
-                    <div>
-                        <h4 class="font-bold text-xs text-gray-800 dark:text-gray-100"><i class="fas fa-[#037B46] fa-compass text-green-500 ml-1"></i> عجلة الحظ</h4>
-                        <small class="text-gray-400 text-[10px] block mt-1">جرّب حظك اليوم واكسب جوائز فورية</small>
-                    </div>
-                    <button class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold py-2 rounded-full transition-colors shadow-sm mt-3" onclick="openSpinModal()">تدوير العجلة 🎡</button>
-                </div>
+                <button id="dailyBtn" class="bg-[#037B46] hover:bg-[#026237] text-white text-xs font-bold py-2 rounded-full transition-colors shadow-sm mt-3" onclick="collectDaily()">جمع 0.50$</button>
             </div>
 
             <!-- Live Market Widget (شاشة تداول كريبتو تفاعلية) -->
@@ -441,23 +424,6 @@
         </div>
     </div>
 
-    <!-- Lucky Spin Modal -->
-    <div id="spinModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[10000] hidden flex flex-col justify-center items-center p-4">
-        <div class="bg-white dark:bg-gray-800 rounded-[28px] p-6 w-full max-w-sm text-center space-y-4 shadow-2xl relative">
-            <button onclick="closeSpinModal()" class="absolute top-4 left-4 text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
-            <h3 class="text-lg font-bold text-[#037B46]">🎡 عجلة الحظ اليومية</h3>
-            <p class="text-xs text-gray-400">تدوير فريد كل 24 ساعة للفوز بجوائز حقيقية</p>
-            
-            <div class="relative flex justify-center items-center my-2">
-                <!-- Wheel Arrow Pointer -->
-                <div class="absolute -top-3 z-10 text-red-500 text-2xl"><i class="fas fa-caret-down"></i></div>
-                <canvas id="wheelCanvas" width="260" height="260" class="rounded-full border-4 border-[#037B46] shadow-md"></canvas>
-            </div>
-
-            <button id="spinStartBtn" onclick="startWheelSpin()" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-full transition-colors text-xs">إبدأ التدوير الآن!</button>
-        </div>
-    </div>
-
     <script>
         // Language Switcher Function
         let currentLang = 'AR';
@@ -500,92 +466,6 @@
                 modal.classList.add('hidden');
                 modal.style.display = 'none';
             }
-        }
-
-        // Spin Modal Controls
-        function openSpinModal() {
-            const modal = document.getElementById('spinModal');
-            if(modal) {
-                modal.classList.remove('hidden');
-                modal.style.display = 'flex';
-                drawWheel();
-            }
-        }
-
-        function closeSpinModal() {
-            const modal = document.getElementById('spinModal');
-            if(modal) {
-                modal.classList.add('hidden');
-                modal.style.display = 'none';
-            }
-        }
-
-        // Wheel Canvas Logic
-        const wheelRewards = ["$0.10", "$0.50", "$1.00", "حظ سعيد", "$0.25", "$2.00"];
-        const wheelColors = ["#037B46", "#F59E0B", "#10B981", "#6B7280", "#3B82F6", "#8B5CF6"];
-        
-        function drawWheel() {
-            const canvas = document.getElementById('wheelCanvas');
-            if(!canvas) return;
-            const ctx = canvas.getContext('2d');
-            const numSegments = wheelRewards.length;
-            const anglePerSeg = (2 * Math.PI) / numSegments;
-
-            ctx.clearRect(0,0,260,260);
-
-            for (let i = 0; i < numSegments; i++) {
-                ctx.beginPath();
-                ctx.fillStyle = wheelColors[i];
-                ctx.moveTo(130, 130);
-                ctx.arc(130, 130, 130, i * anglePerSeg, (i + 1) * anglePerSeg);
-                ctx.fill();
-
-                // Draw Text
-                ctx.save();
-                ctx.translate(130, 130);
-                ctx.rotate(i * anglePerSeg + anglePerSeg / 2);
-                ctx.fillStyle = "#FFFFFF";
-                ctx.font = "bold 12px Cairo";
-                ctx.fillText(wheelRewards[i], 65, 5);
-                ctx.restore();
-            }
-        }
-
-        let isSpinning = false;
-        function startWheelSpin() {
-            if(isSpinning) return;
-            isSpinning = true;
-
-            const canvas = document.getElementById('wheelCanvas');
-            const randomDegree = Math.floor(1800 + Math.random() * 360);
-            canvas.style.transform = `rotate(${randomDegree}deg)`;
-
-            setTimeout(async () => {
-                isSpinning = false;
-                const wonIndex = Math.floor((360 - (randomDegree % 360)) / 60) % 6;
-                const reward = wheelRewards[wonIndex];
-                
-                if(reward !== "حظ سعيد") {
-                    const amount = parseFloat(reward.replace('$', ''));
-                    if(!isNaN(amount) && auth.currentUser) {
-                        await db.collection("users").doc(auth.currentUser.uid).update({
-                            balance: firebase.firestore.FieldValue.increment(amount)
-                        });
-                        await db.collection("ledger").add({
-                            uid: auth.currentUser.uid,
-                            type: "عجلة الحظ",
-                            amount: amount,
-                            title: `جائزة عجلة الحظ ${reward}`,
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                        alert(`مبروك! فزت بـ ${reward} أضيفت إلى رصيدك!`);
-                    }
-                } else {
-                    alert("حظ سعيد في المرة القادمة!");
-                }
-                closeSpinModal();
-                canvas.style.transform = `rotate(0deg)`;
-            }, 4000);
         }
 
         // Dark Mode Toggle
