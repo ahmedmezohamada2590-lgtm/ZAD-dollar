@@ -122,12 +122,7 @@
             </div>
 
             <div class="flex items-center gap-2">
-                <!-- Language Switcher -->
-                <button onclick="toggleLanguage()" class="text-xs font-bold px-2.5 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-full hover:bg-gray-200 transition-colors" id="langBtn">
-                    EN
-                </button>
-
-                <!-- Dark Mode Toggle -->
+                <button onclick="toggleLanguage()" class="text-xs font-bold px-2.5 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-full hover:bg-gray-200 transition-colors" id="langBtn">EN</button>
                 <button onclick="toggleDarkMode()" class="text-gray-500 dark:text-yellow-400 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-sm">
                     <i id="themeIcon" class="fas fa-moon"></i>
                 </button>
@@ -137,8 +132,6 @@
 
         <!-- Home Section -->
         <div id="homeSec" class="section p-4 max-w-xl mx-auto space-y-4">
-            
-            <!-- Global SAFU Protection Banner -->
             <div class="bg-gradient-to-r from-emerald-900 to-gray-900 text-white p-3.5 rounded-[20px] shadow-sm flex items-center justify-between border border-emerald-500/20">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center text-emerald-400 text-lg">
@@ -152,7 +145,6 @@
                 <span class="text-[9px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono">VERIFIED</span>
             </div>
 
-            <!-- User VIP Tier Status Card -->
             <div class="bg-white dark:bg-gray-800 p-4 rounded-[22px] border border-gray-100 dark:border-gray-700 shadow-sm flex items-center justify-between">
                 <div>
                     <span class="text-[10px] text-gray-400 block">مستوى العضوية الحالي</span>
@@ -166,7 +158,6 @@
                 </div>
             </div>
 
-            <!-- Daily Reward Card -->
             <div class="bg-white dark:bg-gray-800 p-4 rounded-[20px] border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col justify-between">
                 <div>
                     <h4 class="font-bold text-xs text-gray-800 dark:text-gray-100"><i class="fas fa-gift text-amber-500 ml-1"></i> مكافأة يومية</h4>
@@ -175,14 +166,11 @@
                 <button id="dailyBtn" class="bg-[#037B46] hover:bg-[#026237] text-white text-xs font-bold py-2 rounded-full transition-colors shadow-sm mt-3" onclick="collectDaily()">جمع 0.50$</button>
             </div>
 
-            <!-- Live Market Widget (شاشة تداول كريبتو تفاعلية) -->
             <div class="bg-gray-900 text-white p-4 rounded-[24px] shadow-md space-y-3 border border-gray-800">
                 <div class="flex justify-between items-center text-xs">
                     <span class="font-bold flex items-center gap-1.5"><i class="fas fa-chart-line text-green-400"></i> سوق الكريبتو المباشر</span>
                     <span class="text-[10px] text-gray-400 font-mono">LIVE MARKET DATA</span>
                 </div>
-                
-                <!-- Simulated Live Mini Chart / Trading Stats -->
                 <div class="grid grid-cols-3 gap-2 text-center pt-1 border-t border-gray-800">
                     <div class="bg-gray-800/60 p-2 rounded-xl">
                         <small class="text-[9px] text-gray-400 block">BTC/USDT</small>
@@ -202,7 +190,6 @@
                 </div>
             </div>
 
-            <!-- Profit Calculator (حاسبة الأرباح التفاعلية) -->
             <div class="bg-gradient-to-br from-green-900 to-[#037B46] text-white p-5 rounded-[24px] shadow-sm space-y-3">
                 <div class="flex justify-between items-center">
                     <h4 class="font-extrabold text-sm"><i class="fas fa-calculator ml-1"></i> حاسبة الأرباح التفاعلية</h4>
@@ -224,10 +211,8 @@
                 </div>
             </div>
 
-            <!-- Investment Plans Grid -->
             <div class="grid grid-cols-2 gap-3" id="plansRoot"></div>
 
-            <!-- How to Start in 3 Steps (دليل البدء في 3 خطوات) -->
             <div class="bg-white dark:bg-gray-800 p-4 rounded-[22px] border border-gray-100 dark:border-gray-700 space-y-3">
                 <h4 class="font-bold text-xs text-[#037B46]"><i class="fas fa-rocket ml-1"></i> كيف تبدأ في 3 خطوات بسيطة؟</h4>
                 <div class="grid grid-cols-3 gap-2 text-center text-[10px]">
@@ -249,7 +234,6 @@
                 </div>
             </div>
 
-            <!-- Strategic Global Partners Banner -->
             <div class="bg-white dark:bg-gray-800 p-4 rounded-[22px] border border-gray-100 dark:border-gray-700 text-center space-y-2">
                 <span class="text-[10px] text-gray-400 font-bold block">شبكات التداول والشركاء المعتمدون</span>
                 <div class="flex justify-around items-center text-gray-400 text-lg pt-1">
@@ -259,15 +243,12 @@
                 </div>
             </div>
 
-            <!-- FAQ Section -->
             <div class="bg-white dark:bg-gray-800 p-4 rounded-[22px] border border-gray-100 dark:border-gray-700 space-y-3 text-right">
                 <h4 class="font-bold text-xs text-[#037B46] mb-2"><i class="fas fa-question-circle"></i> الأسئلة الشائعة</h4>
-                
                 <details class="text-xs bg-[#FAF9F5] dark:bg-gray-900 p-2.5 rounded-xl border border-gray-100 dark:border-gray-700 cursor-pointer">
                     <summary class="font-bold text-gray-700 dark:text-gray-200">كيف يتم احتساب الأرباح؟</summary>
                     <p class="text-gray-500 dark:text-gray-400 mt-1.5 leading-relaxed">تضاف الأرباح بنسبة 30% يومياً لكل الباقات المفعلة تلقائياً في رصيدك كل 24 ساعة.</p>
                 </details>
-
                 <details class="text-xs bg-[#FAF9F5] dark:bg-gray-900 p-2.5 rounded-xl border border-gray-100 dark:border-gray-700 cursor-pointer">
                     <summary class="font-bold text-gray-700 dark:text-gray-200">كم الحد الأدنى للسحب والإيداع؟</summary>
                     <p class="text-gray-500 dark:text-gray-400 mt-1.5 leading-relaxed">الحد الأدنى للشحن والسحب هو 10$ عبر شبكة TRC20.</p>
@@ -286,7 +267,6 @@
                 <div id="refLinkDisplay" class="bg-[#FAF9F5] dark:bg-gray-900 p-3 rounded-xl text-xs font-mono text-[#037B46] border border-dashed border-gray-200 dark:border-gray-700 break-all"></div>
                 <button class="w-full py-3 bg-[#037B46] hover:bg-[#026237] text-white font-bold rounded-full transition-colors text-xs" onclick="copyRef()">نسخ الرابط</button>
                 
-                <!-- Social Share Buttons -->
                 <div class="flex justify-center gap-3 pt-1">
                     <button onclick="shareSocial('wa')" class="bg-green-500 hover:bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center text-lg"><i class="fab fa-whatsapp"></i></button>
                     <button onclick="shareSocial('tg')" class="bg-blue-500 hover:bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center text-lg"><i class="fab fa-telegram-plane"></i></button>
@@ -299,7 +279,6 @@
                 </div>
             </div>
 
-            <!-- Level Achievements & Rewards Box -->
             <div class="bg-white dark:bg-gray-800 p-5 rounded-[24px] border border-gray-100 dark:border-gray-700 text-right space-y-3">
                 <h4 class="font-bold text-xs text-[#037B46]"><i class="fas fa-trophy text-amber-500 ml-1"></i> مكافآت الإنجاز المباشرة</h4>
                 <div class="space-y-2 text-xs">
@@ -358,7 +337,6 @@
                 <button class="w-full py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-full transition-colors text-xs mt-2" onclick="logout()">تسجيل الخروج</button>
             </div>
 
-            <!-- Profit Countdown Timer (العداد التنازلي) -->
             <div class="bg-white dark:bg-gray-800 p-4 rounded-[22px] border border-gray-100 dark:border-gray-700 text-right space-y-2">
                 <div class="flex justify-between items-center">
                     <h4 class="text-[#037B46] font-bold text-xs"><i class="fas fa-clock ml-1"></i> العداد التنازلي لإضافة الربح القادم:</h4>
@@ -366,13 +344,11 @@
                 </div>
             </div>
 
-            <!-- Active Plans -->
             <div class="text-right space-y-2">
                 <h4 class="text-[#037B46] font-bold text-xs">📊 باقاتي النّشطة:</h4>
                 <div id="myActivePlans" class="space-y-2"></div>
             </div>
 
-            <!-- Financial Ledger (سجل المعاملات المالي التفصيلي) -->
             <div class="bg-white dark:bg-gray-800 p-4 rounded-[22px] border border-gray-100 dark:border-gray-700 text-right space-y-3">
                 <h4 class="text-[#037B46] font-bold text-xs"><i class="fas fa-list-alt ml-1"></i> سجل المعاملات الدّاخلية (Ledger):</h4>
                 <div id="ledgerList" class="space-y-2 text-xs">
@@ -413,11 +389,6 @@
             
             <input type="number" id="qAmt" placeholder="اكتب المبلغ بالدولار $" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-900 text-center text-sm focus:outline-none focus:ring-2 focus:ring-[#037B46]">
             <input type="text" id="sPhone" placeholder="رقم العملية أو الـ TXID" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-900 text-center text-sm focus:outline-none focus:ring-2 focus:ring-[#037B46]">
-            
-            <div class="text-right">
-                <label class="text-[11px] text-gray-400 block mb-1">ارفع إثبات التحويل (سكرين شوت):</label>
-                <input type="file" id="sImg" accept="image/*" class="w-full text-xs text-gray-500 file:mr-2 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-[#037B46]/10 file:text-[#037B46]">
-            </div>
             
             <button id="confBtn" class="w-full py-3.5 bg-[#037B46] hover:bg-[#026237] text-white font-bold rounded-full transition-colors text-sm" onclick="handleDeposit()">تأكيد الشحن</button>
             <button onclick="closeDepModal()" class="text-xs text-gray-400 block mx-auto pt-1 hover:underline">إلغاء</button>
@@ -607,7 +578,6 @@
                     status: "active"
                 });
 
-                // Ledger Entry
                 await db.collection("ledger").add({
                     uid: auth.currentUser.uid,
                     type: "شراء باقة",
@@ -622,6 +592,325 @@
             }
         }
 
+        // Handle Deposit Submissions
+        async function handleDeposit() {
+            const amt = parseFloat(document.getElementById('qAmt').value);
+            const txid = document.getElementById('sPhone').value.trim();
+
+            if (!amt || amt <= 0 || !txid) {
+                return alert("يرجى كتابة المبلغ ورقم العملية / TXID بشكل صحيح");
+            }
+
+            try {
+                await db.collection("deposits").add({
+                    uid: auth.currentUser.uid,
+                    userName: currentUser.name || "مستخدم ZAD",
+                    userPhone: currentUser.phone || "",
+                    amount: amt,
+                    txid: txid,
+                    status: "pending",
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert("تم تقديم طلب الشحن بنجاح! سيتم مراجعته وإضافة الرصيد فور التأكيد.");
+                document.getElementById('qAmt').value = '';
+                document.getElementById('sPhone').value = '';
+                closeDepModal();
+            } catch (e) {
+                alert("حدث خطأ أثناء إرسال طلب الشحن: " + e.message);
+            }
+        }
+
+        // Handle Withdraw Submissions
+        async function handleWithdraw() {
+            const amt = parseFloat(document.getElementById('wAmount').value);
+            const wallet = document.getElementById('wWallet').value.trim();
+
+            if (!amt || amt < 10) return alert("الحد الأدنى للسحب هو 10$");
+            if (!wallet) return alert("يرجى إدخال عنوان محفظة TRC20");
+            if ((currentUser.balance || 0) < amt) return alert("رصيدك الحالي غير كافٍ للعملية");
+
+            try {
+                await db.collection("users").doc(auth.currentUser.uid).update({
+                    balance: firebase.firestore.FieldValue.increment(-amt)
+                });
+
+                await db.collection("withdraws").add({
+                    uid: auth.currentUser.uid,
+                    userName: currentUser.name || "مستخدم ZAD",
+                    userPhone: currentUser.phone || "",
+                    amount: amt,
+                    wallet: wallet,
+                    status: "pending",
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                await db.collection("ledger").add({
+                    uid: auth.currentUser.uid,
+                    type: "طلب سحب",
+                    amount: -amt,
+                    title: `طلب سحب إلى ${wallet.substring(0, 8)}...`,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert("تم إرسال طلب السحب بنجاح، جاري المعالجة!");
+                document.getElementById('wAmount').value = '';
+                document.getElementById('wWallet').value = '';
+            } catch (e) {
+                alert("حدث خطأ أثناء السحب: " + e.message);
+            }
+        }
+
+        // Collect Daily Reward
+        async function collectDaily() {
+            const now = Date.now();
+            const lastReward = currentUser.lastDailyReward || 0;
+            const cooldown = 24 * 60 * 60 * 1000;
+
+            if (now - lastReward < cooldown) {
+                const remainingMs = cooldown - (now - lastReward);
+                const hrs = Math.floor(remainingMs / (1000 * 60 * 60));
+                const mins = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
+                return alert(`يمكنك مطالبة المكافأة التالية بعد ${hrs} ساعة و ${mins} دقيقة.`);
+            }
+
+            try {
+                await db.collection("users").doc(auth.currentUser.uid).update({
+                    balance: firebase.firestore.FieldValue.increment(0.50),
+                    lastDailyReward: now
+                });
+
+                await db.collection("ledger").add({
+                    uid: auth.currentUser.uid,
+                    type: "مكافأة يومية",
+                    amount: 0.50,
+                    title: "جمع المكافأة اليومية (0.50$)",
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert("تم إضافة 0.50$ إلى رصيدك بنجاح! 🎉");
+            } catch(e) {
+                alert("حدث خطأ أثناء جمع المكافأة");
+            }
+        }
+
+        // Claim Achievement
+        async function claimAchievement(reqCount) {
+            const userRefs = currentUser.refs || 0;
+            const claimed = currentUser.claimedAchievements || [];
+
+            if (userRefs < reqCount) {
+                return alert(`تحتاج إلى دعوة ${reqCount} أعضاء نشطين على الأقل. لديك حالياً ${userRefs}.`);
+            }
+
+            if (claimed.includes(reqCount)) {
+                return alert("لقد قمت بطلب هذه المكافأة بالفعل!");
+            }
+
+            const reward = 5.00;
+            try {
+                await db.collection("users").doc(auth.currentUser.uid).update({
+                    balance: firebase.firestore.FieldValue.increment(reward),
+                    claimedAchievements: firebase.firestore.FieldValue.arrayUnion(reqCount)
+                });
+
+                await db.collection("ledger").add({
+                    uid: auth.currentUser.uid,
+                    type: "مكافأة إنجاز",
+                    amount: reward,
+                    title: `مكافأة دعوة ${reqCount} أعضاء`,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert(`مبروك! تم إضافة بونص ${reward}$ إلى رصيدك! 🏆`);
+            } catch(e) {
+                alert("حدث خطأ أثناء الحصول على المكافأة");
+            }
+        }
+
+        // Log Tab Switching
+        function switchLogTab(tab) {
+            const wTab = document.getElementById('userWithdrawHistory');
+            const dTab = document.getElementById('userDepositHistory');
+            const btnW = document.getElementById('tabWBtn');
+            const btnD = document.getElementById('tabDBtn');
+
+            if (tab === 'w') {
+                wTab.classList.remove('hidden');
+                dTab.classList.add('hidden');
+                btnW.className = "flex-1 py-2 border-b-2 border-[#037B46] text-[#037B46] font-bold";
+                btnD.className = "flex-1 py-2 text-gray-400 font-medium";
+            } else {
+                dTab.classList.remove('hidden');
+                wTab.classList.add('hidden');
+                btnD.className = "flex-1 py-2 border-b-2 border-[#037B46] text-[#037B46] font-bold";
+                btnW.className = "flex-1 py-2 text-gray-400 font-medium";
+            }
+        }
+
+        // Listeners for User Active Plans and Logs
+        function listenUserData(uid) {
+            // Active Plans Listener
+            db.collection("user_plans").where("uid", "==", uid).where("status", "==", "active").onSnapshot(snap => {
+                const container = document.getElementById('myActivePlans');
+                if (snap.empty) {
+                    container.innerHTML = `<p class="text-xs text-gray-400 text-center py-2">لا توجد باقات نشطة حالياً</p>`;
+                    return;
+                }
+                container.innerHTML = '';
+                snap.forEach(doc => {
+                    const plan = doc.data();
+                    container.innerHTML += `
+                        <div class="flex justify-between items-center bg-[#FAF9F5] dark:bg-gray-900 p-3 rounded-xl border border-gray-100 dark:border-gray-700 text-xs">
+                            <div>
+                                <b class="text-gray-800 dark:text-gray-100 block">${plan.planName}</b>
+                                <span class="text-gray-400 text-[10px]">تاريخ التفعيل: ${new Date(plan.activatedAt).toLocaleDateString('ar-EG')}</span>
+                            </div>
+                            <span class="text-green-600 dark:text-green-400 font-bold">+${plan.dailyProfit.toFixed(2)}$ / يوم</span>
+                        </div>
+                    `;
+                });
+            });
+
+            // Withdraw History
+            db.collection("withdraws").where("uid", "==", uid).orderBy("createdAt", "desc").onSnapshot(snap => {
+                const container = document.getElementById('userWithdrawHistory');
+                if (snap.empty) {
+                    container.innerHTML = `<p class="text-xs text-gray-400 text-center py-3">لا توجد عمليات سحب معروضة</p>`;
+                    return;
+                }
+                container.innerHTML = '';
+                snap.forEach(doc => {
+                    const w = doc.data();
+                    const statusColor = w.status === 'approved' ? 'text-green-600' : w.status === 'rejected' ? 'text-red-500' : 'text-amber-500';
+                    const statusText = w.status === 'approved' ? 'مقبول' : w.status === 'rejected' ? 'مرفوض' : 'قيد الانتظار';
+                    container.innerHTML += `
+                        <div class="flex justify-between items-center bg-white dark:bg-gray-800 p-3 rounded-xl border border-gray-100 dark:border-gray-700 text-xs">
+                            <div>
+                                <b class="block text-gray-800 dark:text-gray-100">سحب ${w.amount}$</b>
+                                <span class="text-gray-400 text-[10px] font-mono">${w.wallet.substring(0, 10)}...</span>
+                            </div>
+                            <span class="font-bold ${statusColor}">${statusText}</span>
+                        </div>
+                    `;
+                });
+            });
+
+            // Deposit History
+            db.collection("deposits").where("uid", "==", uid).orderBy("createdAt", "desc").onSnapshot(snap => {
+                const container = document.getElementById('userDepositHistory');
+                if (snap.empty) {
+                    container.innerHTML = `<p class="text-xs text-gray-400 text-center py-3">لا توجد عمليات إيداع معروضة</p>`;
+                    return;
+                }
+                container.innerHTML = '';
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    const statusColor = d.status === 'approved' ? 'text-green-600' : d.status === 'rejected' ? 'text-red-500' : 'text-amber-500';
+                    const statusText = d.status === 'approved' ? 'مقبول' : d.status === 'rejected' ? 'مرفوض' : 'قيد الانتظار';
+                    container.innerHTML += `
+                        <div class="flex justify-between items-center bg-white dark:bg-gray-800 p-3 rounded-xl border border-gray-100 dark:border-gray-700 text-xs">
+                            <div>
+                                <b class="block text-gray-800 dark:text-gray-100">إيداع ${d.amount}$</b>
+                                <span class="text-gray-400 text-[10px] font-mono">TXID: ${d.txid}</span>
+                            </div>
+                            <span class="font-bold ${statusColor}">${statusText}</span>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        // Admin Dashboard Functions
+        function listenAdminData() {
+            db.collection("deposits").where("status", "==", "pending").onSnapshot(snap => {
+                const list = document.getElementById('adminDepositsList');
+                if (snap.empty) {
+                    list.innerHTML = `<p class="text-xs text-gray-400">لا توجد طلبات إيداع معلقة</p>`;
+                    return;
+                }
+                list.innerHTML = '';
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    list.innerHTML += `
+                        <div class="bg-gray-50 dark:bg-gray-900 p-3 rounded-xl border border-gray-200 dark:border-gray-700 text-xs space-y-1">
+                            <div class="flex justify-between">
+                                <b>${d.userName} (${d.userPhone})</b>
+                                <b class="text-green-600">${d.amount}$</b>
+                            </div>
+                            <p class="text-[10px] font-mono break-all text-gray-500">TXID: ${d.txid}</p>
+                            <div class="flex gap-2 pt-1">
+                                <button onclick="approveDeposit('${doc.id}', '${d.uid}', ${d.amount})" class="bg-green-600 text-white px-3 py-1 rounded-lg font-bold text-[10px]">موافقة</button>
+                                <button onclick="rejectDeposit('${doc.id}')" class="bg-red-500 text-white px-3 py-1 rounded-lg font-bold text-[10px]">رفض</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+
+            db.collection("withdraws").where("status", "==", "pending").onSnapshot(snap => {
+                const list = document.getElementById('adminWithdrawsList');
+                if (snap.empty) {
+                    list.innerHTML = `<p class="text-xs text-gray-400">لا توجد طلبات سحب معلقة</p>`;
+                    return;
+                }
+                list.innerHTML = '';
+                snap.forEach(doc => {
+                    const w = doc.data();
+                    list.innerHTML += `
+                        <div class="bg-gray-50 dark:bg-gray-900 p-3 rounded-xl border border-gray-200 dark:border-gray-700 text-xs space-y-1">
+                            <div class="flex justify-between">
+                                <b>${w.userName} (${w.userPhone})</b>
+                                <b class="text-red-500">${w.amount}$</b>
+                            </div>
+                            <p class="text-[10px] font-mono break-all text-gray-500">Wallet: ${w.wallet}</p>
+                            <div class="flex gap-2 pt-1">
+                                <button onclick="approveWithdraw('${doc.id}')" class="bg-green-600 text-white px-3 py-1 rounded-lg font-bold text-[10px]">موافقة</button>
+                                <button onclick="rejectWithdraw('${doc.id}', '${w.uid}', ${w.amount})" class="bg-red-500 text-white px-3 py-1 rounded-lg font-bold text-[10px]">رفض وإرجاع</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        async function approveDeposit(docId, uid, amount) {
+            await db.collection("deposits").doc(docId).update({ status: "approved" });
+            await db.collection("users").doc(uid).update({ balance: firebase.firestore.FieldValue.increment(amount) });
+            await db.collection("ledger").add({
+                uid: uid,
+                type: "إيداع مقبول",
+                amount: amount,
+                title: "تم تأكيد إيداع الرصيد",
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert("تم إقرار الإيداع بنجاح!");
+        }
+
+        async function rejectDeposit(docId) {
+            await db.collection("deposits").doc(docId).update({ status: "rejected" });
+            alert("تم رفض طلب الإيداع.");
+        }
+
+        async function approveWithdraw(docId) {
+            await db.collection("withdraws").doc(docId).update({ status: "approved" });
+            alert("تمت الموافقة على السحب!");
+        }
+
+        async function rejectWithdraw(docId, uid, amount) {
+            await db.collection("withdraws").doc(docId).update({ status: "rejected" });
+            await db.collection("users").doc(uid).update({ balance: firebase.firestore.FieldValue.increment(amount) });
+            await db.collection("ledger").add({
+                uid: uid,
+                type: "سحب مرفوض",
+                amount: amount,
+                title: "إرجاع مبلغ السحب المرفوض",
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert("تم رفض السحب وإعادة المبلغ إلى حساب المستخدم!");
+        }
+
+        // Firebase Auth State
         auth.onAuthStateChanged(user => {
             if(user) {
                 document.getElementById('authPage').classList.add('hidden');
@@ -639,7 +928,6 @@
                         document.getElementById('refCounter').innerText = currentUser.refs || 0;
                         document.getElementById('refProfit').innerText = (currentUser.refProfit || 0).toFixed(2);
 
-                        // VIP Tier Evaluation
                         const totalBal = currentUser.balance || 0;
                         let tierName = "VIP 1 Standard";
                         if(totalBal >= 500) tierName = "VIP 4 Diamond 💎";
@@ -650,11 +938,13 @@
 
                         if(currentUser.phone === ADMIN_PHONE) {
                             document.getElementById('adminArea').classList.remove('hidden');
+                            listenAdminData();
                         }
                     }
                 });
 
-                // Ledger Listener
+                listenUserData(user.uid);
+
                 db.collection("ledger").where("uid", "==", user.uid).orderBy("createdAt", "desc").limit(10).onSnapshot(snap => {
                     const lList = document.getElementById('ledgerList');
                     if(snap.empty) {
