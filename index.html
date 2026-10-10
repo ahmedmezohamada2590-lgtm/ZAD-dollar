@@ -465,14 +465,15 @@
             if (loader) loader.style.display = 'none';
         }, 1200);
 
-        // Firebase Configuration
+        // Firebase Configuration (zad-dollar-app)
         const firebaseConfig = {
-            apiKey: "AIzaSyBCBGKC1uqEcJTqyt-tcc2pSp17G9ttL4g",
-            authDomain: "zad-dollar.firebaseapp.com",
-            projectId: "zad-dollar",
-            storageBucket: "zad-dollar.firebasestorage.app",
-            messagingSenderId: "151365562104",
-            appId: "1:151365562104:web:134709857d04fd83d9150d"
+            apiKey: "AIzaSyCH0wOucpPMg3zPatJiu4zkagL0elhO7Q0",
+            authDomain: "zad-dollar-app.firebaseapp.com",
+            projectId: "zad-dollar-app",
+            storageBucket: "zad-dollar-app.firebasestorage.app",
+            messagingSenderId: "358252072843",
+            appId: "1:358252072843:web:8690e35a5ea4360a24e98e",
+            measurementId: "G-BKGHB0PHQD"
         };
 
         firebase.initializeApp(firebaseConfig);
@@ -717,6 +718,36 @@
             }
         }
 
+        async function approveWithdraw(docId) {
+            if(!confirm("تأكيد اعتماد تحويل السحب؟")) return;
+            try {
+                await db.collection("withdrawals").doc(docId).update({ status: "approved" });
+                alert("تم اعتماد طلب السحب!");
+            } catch(e) {
+                alert("حدث خطأ: " + e.message);
+            }
+        }
+
+        async function rejectWithdraw(docId, targetUid, amount) {
+            if(!confirm(`تأكيد رفض السحب وإعادة مبلغ ${amount}$ لرصيد المستخدم؟`)) return;
+            try {
+                await db.collection("withdrawals").doc(docId).update({ status: "rejected" });
+                await db.collection("users").doc(targetUid).update({
+                    balance: firebase.firestore.FieldValue.increment(Number(amount))
+                });
+                await db.collection("ledger").add({
+                    uid: targetUid,
+                    type: "سحب مرفوض",
+                    amount: Number(amount),
+                    title: `إعادة مبلغ السحب المرفوض`,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                alert("تم رفض طلب السحب وإعادة المبلغ للحساب بنجاح.");
+            } catch(e) {
+                alert("حدث خطأ: " + e.message);
+            }
+        }
+
         function switchLogTab(tab) {
             const wHist = document.getElementById('userWithdrawHistory');
             const dHist = document.getElementById('userDepositHistory');
@@ -742,164 +773,213 @@
                 document.getElementById('authPage')?.classList.add('hidden');
                 document.getElementById('mainApp')?.classList.remove('hidden');
                 
+                let adminSubscribed = false;
+
                 db.collection("users").doc(user.uid).onSnapshot(doc => {
-                    if(doc.exists) {
-                        currentUser = doc.data() || {};
-                        const b = (Number(currentUser.balance) || 0).toFixed(2);
-                        
-                        if(document.getElementById('balDisplay')) document.getElementById('balDisplay').innerText = b;
-                        if(document.getElementById('statBalance')) document.getElementById('statBalance').innerText = `${b} $`;
-                        if(document.getElementById('uNameDisplay')) document.getElementById('uNameDisplay').innerText = currentUser.name || "مستخدم ZAD";
-                        if(document.getElementById('uPhoneDisplay')) document.getElementById('uPhoneDisplay').innerText = currentUser.phone || "";
-                        if(document.getElementById('refLinkDisplay')) document.getElementById('refLinkDisplay').innerText = `${window.location.origin}${window.location.pathname}?id=${currentUser.refId || ''}`;
-                        if(document.getElementById('refCounter')) document.getElementById('refCounter').innerText = currentUser.refs || 0;
-                        if(document.getElementById('refProfit')) document.getElementById('refProfit').innerText = (Number(currentUser.refProfit) || 0).toFixed(2);
+                    try {
+                        if(doc.exists) {
+                            currentUser = doc.data() || {};
+                            const b = (Number(currentUser.balance) || 0).toFixed(2);
+                            
+                            if(document.getElementById('balDisplay')) document.getElementById('balDisplay').innerText = b;
+                            if(document.getElementById('statBalance')) document.getElementById('statBalance').innerText = `${b} $`;
+                            if(document.getElementById('uNameDisplay')) document.getElementById('uNameDisplay').innerText = currentUser.name || "مستخدم ZAD";
+                            if(document.getElementById('uPhoneDisplay')) document.getElementById('uPhoneDisplay').innerText = currentUser.phone || "";
+                            if(document.getElementById('refLinkDisplay')) document.getElementById('refLinkDisplay').innerText = `${window.location.origin}${window.location.pathname}?id=${currentUser.refId || ''}`;
+                            if(document.getElementById('refCounter')) document.getElementById('refCounter').innerText = currentUser.refs || 0;
+                            if(document.getElementById('refProfit')) document.getElementById('refProfit').innerText = (Number(currentUser.refProfit) || 0).toFixed(2);
 
-                        const totalBal = Number(currentUser.balance) || 0;
-                        let tierName = "VIP 1 Standard";
-                        if(totalBal >= 500) tierName = "VIP 4 Diamond 💎";
-                        else if(totalBal >= 200) tierName = "VIP 3 Gold 🥇";
-                        else if(totalBal >= 50) tierName = "VIP 2 Silver 🥈";
-                        
-                        if(document.getElementById('vipTierName')) document.getElementById('vipTierName').innerHTML = `<i class="fas fa-crown"></i> ${tierName}`;
+                            const totalBal = Number(currentUser.balance) || 0;
+                            let tierName = "VIP 1 Standard";
+                            if(totalBal >= 500) tierName = "VIP 4 Diamond 💎";
+                            else if(totalBal >= 200) tierName = "VIP 3 Gold 🥇";
+                            else if(totalBal >= 50) tierName = "VIP 2 Silver 🥈";
+                            
+                            if(document.getElementById('vipTierName')) document.getElementById('vipTierName').innerHTML = `<i class="fas fa-crown"></i> ${tierName}`;
 
-                        // Admin Area
-                        if(currentUser.phone === ADMIN_PHONE) {
-                            document.getElementById('adminArea')?.classList.remove('hidden');
+                            // Admin Check
+                            if(currentUser.phone === ADMIN_PHONE) {
+                                document.getElementById('adminArea')?.classList.remove('hidden');
 
-                            db.collection("deposits").where("status", "==", "pending").onSnapshot(snap => {
-                                const list = document.getElementById('adminDepositsList');
-                                if(!list) return;
-                                if(snap.empty) {
-                                    list.innerHTML = `<p class="text-xs text-gray-400 text-center py-2">لا توجد طلبات إيداع معلقة</p>`;
-                                    return;
+                                if (!adminSubscribed) {
+                                    adminSubscribed = true;
+
+                                    // Admin Deposits
+                                    db.collection("deposits").where("status", "==", "pending").onSnapshot(snap => {
+                                        try {
+                                            const list = document.getElementById('adminDepositsList');
+                                            if(!list) return;
+                                            if(snap.empty) {
+                                                list.innerHTML = `<p class="text-xs text-gray-400 text-center py-2">لا توجد طلبات إيداع معلقة</p>`;
+                                                return;
+                                            }
+                                            list.innerHTML = '';
+                                            snap.forEach(docSnap => {
+                                                const item = docSnap.data();
+                                                const id = docSnap.id;
+                                                list.innerHTML += `
+                                                    <div class="bg-[#FAF9F5] dark:bg-gray-900 p-3 rounded-xl border border-gray-200 dark:border-gray-700 text-xs space-y-2">
+                                                        <div class="flex justify-between font-bold">
+                                                            <span>${item.userName || ''} (${item.userPhone || ''})</span>
+                                                            <span class="text-green-600">${(Number(item.amount) || 0).toFixed(2)}$</span>
+                                                        </div>
+                                                        <p class="text-[10px] text-gray-500 font-mono">TXID: ${item.txid || ''}</p>
+                                                        <div class="flex gap-2 pt-1">
+                                                            <button onclick="approveDeposit('${id}', '${item.uid}', ${item.amount})" class="flex-1 py-1 bg-green-600 text-white rounded-lg text-[10px] font-bold">قبول</button>
+                                                            <button onclick="rejectDeposit('${id}')" class="flex-1 py-1 bg-red-600 text-white rounded-lg text-[10px] font-bold">رفض</button>
+                                                        </div>
+                                                    </div>
+                                                `;
+                                            });
+                                        } catch(e) { console.log("Dep Render Error", e); }
+                                    }, err => console.log("Admin Dep Error", err));
+
+                                    // Admin Withdrawals
+                                    db.collection("withdrawals").where("status", "==", "pending").onSnapshot(snap => {
+                                        try {
+                                            const list = document.getElementById('adminWithdrawsList');
+                                            if(!list) return;
+                                            if(snap.empty) {
+                                                list.innerHTML = `<p class="text-xs text-gray-400 text-center py-2">لا توجد طلبات سحب معلقة</p>`;
+                                                return;
+                                            }
+                                            list.innerHTML = '';
+                                            snap.forEach(docSnap => {
+                                                const item = docSnap.data();
+                                                const id = docSnap.id;
+                                                list.innerHTML += `
+                                                    <div class="bg-[#FAF9F5] dark:bg-gray-900 p-3 rounded-xl border border-gray-200 dark:border-gray-700 text-xs space-y-2">
+                                                        <div class="flex justify-between font-bold">
+                                                            <span>${item.userName || ''} (${item.userPhone || ''})</span>
+                                                            <span class="text-red-500">${(Number(item.amount) || 0).toFixed(2)}$</span>
+                                                        </div>
+                                                        <p class="text-[10px] text-gray-500 font-mono break-all">Wallet: ${item.wallet || ''}</p>
+                                                        <div class="flex gap-2 pt-1">
+                                                            <button onclick="approveWithdraw('${id}')" class="flex-1 py-1 bg-green-600 text-white rounded-lg text-[10px] font-bold">تأكيد السحب</button>
+                                                            <button onclick="rejectWithdraw('${id}', '${item.uid}', ${item.amount})" class="flex-1 py-1 bg-red-600 text-white rounded-lg text-[10px] font-bold">رفض وإعادة</button>
+                                                        </div>
+                                                    </div>
+                                                `;
+                                            });
+                                        } catch(e) { console.log("Withdraw Render Error", e); }
+                                    }, err => console.log("Admin Withdraw Error", err));
                                 }
-                                list.innerHTML = '';
-                                snap.forEach(docSnap => {
-                                    const item = docSnap.data();
-                                    const id = docSnap.id;
-                                    list.innerHTML += `
-                                        <div class="bg-[#FAF9F5] dark:bg-gray-900 p-3 rounded-xl border border-gray-200 dark:border-gray-700 text-xs space-y-2">
-                                            <div class="flex justify-between font-bold">
-                                                <span>${item.userName || ''} (${item.userPhone || ''})</span>
-                                                <span class="text-green-600">${(Number(item.amount) || 0).toFixed(2)}$</span>
-                                            </div>
-                                            <p class="text-[10px] text-gray-500 font-mono">TXID: ${item.txid || ''}</p>
-                                            <div class="flex gap-2 pt-1">
-                                                <button onclick="approveDeposit('${id}', '${item.uid}', ${item.amount})" class="flex-1 py-1 bg-green-600 text-white rounded-lg text-[10px] font-bold">قبول</button>
-                                                <button onclick="rejectDeposit('${id}')" class="flex-1 py-1 bg-red-600 text-white rounded-lg text-[10px] font-bold">رفض</button>
-                                            </div>
-                                        </div>
-                                    `;
-                                });
-                            }, err => console.log("Admin Dep Error", err));
+                            }
                         }
-                    }
+                    } catch (e) { console.log("User doc handling error:", e); }
                 }, err => console.log("User Snapshot Error:", err));
 
                 // Ledger Listener
                 db.collection("ledger").where("uid", "==", user.uid).onSnapshot(snap => {
-                    const lList = document.getElementById('ledgerList');
-                    if(!lList) return;
-                    if(snap.empty) {
-                        lList.innerHTML = `<p class="text-center text-gray-400 py-3">لا توجد معاملات مسجلة بعد</p>`;
-                        return;
-                    }
-                    lList.innerHTML = '';
-                    const items = snap.docs.map(d => d.data()).sort((a,b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
-                    items.slice(0, 10).forEach(data => {
-                        const amt = Number(data.amount) || 0;
-                        const isPos = amt > 0;
-                        lList.innerHTML += `
-                            <div class="flex justify-between items-center bg-[#FAF9F5] dark:bg-gray-900 p-2.5 rounded-xl border border-gray-100 dark:border-gray-700">
-                                <div>
-                                    <b class="text-gray-800 dark:text-gray-200 block">${data.title || data.type || ''}</b>
-                                    <small class="text-gray-400">${data.type || ''}</small>
+                    try {
+                        const lList = document.getElementById('ledgerList');
+                        if(!lList) return;
+                        if(snap.empty) {
+                            lList.innerHTML = `<p class="text-center text-gray-400 py-3">لا توجد معاملات مسجلة بعد</p>`;
+                            return;
+                        }
+                        lList.innerHTML = '';
+                        const items = snap.docs.map(d => d.data()).sort((a,b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
+                        items.slice(0, 10).forEach(data => {
+                            const amt = Number(data.amount) || 0;
+                            const isPos = amt > 0;
+                            lList.innerHTML += `
+                                <div class="flex justify-between items-center bg-[#FAF9F5] dark:bg-gray-900 p-2.5 rounded-xl border border-gray-100 dark:border-gray-700">
+                                    <div>
+                                        <b class="text-gray-800 dark:text-gray-200 block">${data.title || data.type || ''}</b>
+                                        <small class="text-gray-400">${data.type || ''}</small>
+                                    </div>
+                                    <span class="font-extrabold font-mono ${isPos ? 'text-green-600 dark:text-green-400' : 'text-red-500'}">${isPos ? '+' : ''}${amt.toFixed(2)} $</span>
                                 </div>
-                                <span class="font-extrabold font-mono ${isPos ? 'text-green-600 dark:text-green-400' : 'text-red-500'}">${isPos ? '+' : ''}${amt.toFixed(2)} $</span>
-                            </div>
-                        `;
-                    });
+                            `;
+                        });
+                    } catch(e) { console.log("Ledger Render Error", e); }
                 }, err => console.log("Ledger Error", err));
 
                 // Active Plans
                 db.collection("user_plans").where("uid", "==", user.uid).onSnapshot(snap => {
-                    const container = document.getElementById('myActivePlans');
-                    if(!container) return;
-                    if(snap.empty) {
-                        container.innerHTML = `<p class="text-center text-gray-400 text-xs py-2">لا توجد باقات نشطة حالياً</p>`;
-                        return;
-                    }
-                    container.innerHTML = '';
-                    snap.forEach(d => {
-                        const p = d.data();
-                        container.innerHTML += `
-                            <div class="bg-white dark:bg-gray-800 p-3 rounded-2xl border border-gray-100 dark:border-gray-700 flex justify-between items-center text-xs">
-                                <div>
-                                    <b class="text-gray-800 dark:text-gray-100 block">${p.planName || ''}</b>
-                                    <span class="text-gray-400 text-[10px]">الربح: ${(Number(p.dailyProfit) || 0).toFixed(2)}$/يوم</span>
+                    try {
+                        const container = document.getElementById('myActivePlans');
+                        if(!container) return;
+                        if(snap.empty) {
+                            container.innerHTML = `<p class="text-center text-gray-400 text-xs py-2">لا توجد باقات نشطة حالياً</p>`;
+                            return;
+                        }
+                        container.innerHTML = '';
+                        snap.forEach(d => {
+                            const p = d.data();
+                            container.innerHTML += `
+                                <div class="bg-white dark:bg-gray-800 p-3 rounded-2xl border border-gray-100 dark:border-gray-700 flex justify-between items-center text-xs">
+                                    <div>
+                                        <b class="text-gray-800 dark:text-gray-100 block">${p.planName || ''}</b>
+                                        <span class="text-gray-400 text-[10px]">الربح: ${(Number(p.dailyProfit) || 0).toFixed(2)}$/يوم</span>
+                                    </div>
+                                    <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2.5 py-1 rounded-full">نشطة 🟢</span>
                                 </div>
-                                <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2.5 py-1 rounded-full">نشطة 🟢</span>
-                            </div>
-                        `;
-                    });
+                            `;
+                        });
+                    } catch(e) { console.log("Plans Render Error", e); }
                 }, err => console.log("Plans Error", err));
 
                 // Withdrawals History
                 db.collection("withdrawals").where("uid", "==", user.uid).onSnapshot(snap => {
-                    const container = document.getElementById('userWithdrawHistory');
-                    if(!container) return;
-                    if(snap.empty) {
-                        container.innerHTML = `<p class="text-center text-gray-400 text-xs py-3">لا توجد سحوبات مسجلة</p>`;
-                        return;
-                    }
-                    container.innerHTML = '';
-                    const items = snap.docs.map(d => d.data()).sort((a,b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
-                    items.forEach(w => {
-                        const amt = Number(w.amount) || 0;
-                        const wStr = w.wallet || '';
-                        let statusBadge = `<span class="text-amber-500 bg-amber-50 px-2 py-0.5 rounded text-[10px]">قيد الانتظار</span>`;
-                        if(w.status === 'approved') statusBadge = `<span class="text-green-600 bg-green-50 px-2 py-0.5 rounded text-[10px]">مكتمل ✅</span>`;
-                        if(w.status === 'rejected') statusBadge = `<span class="text-red-500 bg-red-50 px-2 py-0.5 rounded text-[10px]">مرفوض ❌</span>`;
+                    try {
+                        const container = document.getElementById('userWithdrawHistory');
+                        if(!container) return;
+                        if(snap.empty) {
+                            container.innerHTML = `<p class="text-center text-gray-400 text-xs py-3">لا توجد سحوبات مسجلة</p>`;
+                            return;
+                        }
+                        container.innerHTML = '';
+                        const items = snap.docs.map(d => d.data()).sort((a,b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
+                        items.forEach(w => {
+                            const amt = Number(w.amount) || 0;
+                            const wStr = w.wallet || '';
+                            let statusBadge = `<span class="text-amber-500 bg-amber-50 px-2 py-0.5 rounded text-[10px]">قيد الانتظار</span>`;
+                            if(w.status === 'approved') statusBadge = `<span class="text-green-600 bg-green-50 px-2 py-0.5 rounded text-[10px]">مكتمل ✅</span>`;
+                            if(w.status === 'rejected') statusBadge = `<span class="text-red-500 bg-red-50 px-2 py-0.5 rounded text-[10px]">مرفوض ❌</span>`;
 
-                        container.innerHTML += `
-                            <div class="bg-white dark:bg-gray-800 p-3 rounded-xl border border-gray-100 dark:border-gray-700 flex justify-between items-center text-xs">
-                                <div>
-                                    <b class="text-gray-800 dark:text-gray-100 block">سحب ${amt.toFixed(2)}$</b>
-                                    <small class="text-gray-400 block font-mono text-[10px]">${wStr.substring(0, 10)}...</small>
+                            container.innerHTML += `
+                                <div class="bg-white dark:bg-gray-800 p-3 rounded-xl border border-gray-100 dark:border-gray-700 flex justify-between items-center text-xs">
+                                    <div>
+                                        <b class="text-gray-800 dark:text-gray-100 block">سحب ${amt.toFixed(2)}$</b>
+                                        <small class="text-gray-400 block font-mono text-[10px]">${wStr.substring(0, 10)}...</small>
+                                    </div>
+                                    ${statusBadge}
                                 </div>
-                                ${statusBadge}
-                            </div>
-                        `;
-                    });
+                            `;
+                        });
+                    } catch(e) { console.log("Withdrawal Render Error", e); }
                 }, err => console.log("Withdrawals Error", err));
 
                 // Deposits History
                 db.collection("deposits").where("uid", "==", user.uid).onSnapshot(snap => {
-                    const container = document.getElementById('userDepositHistory');
-                    if(!container) return;
-                    if(snap.empty) {
-                        container.innerHTML = `<p class="text-center text-gray-400 text-xs py-3">لا توجد إيداعات مسجلة</p>`;
-                        return;
-                    }
-                    container.innerHTML = '';
-                    const items = snap.docs.map(d => d.data()).sort((a,b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
-                    items.forEach(dep => {
-                        const amt = Number(dep.amount) || 0;
-                        let statusBadge = `<span class="text-amber-500 bg-amber-50 px-2 py-0.5 rounded text-[10px]">قيد الانتظار</span>`;
-                        if(dep.status === 'approved') statusBadge = `<span class="text-green-600 bg-green-50 px-2 py-0.5 rounded text-[10px]">مقبول ✅</span>`;
-                        if(dep.status === 'rejected') statusBadge = `<span class="text-red-500 bg-red-50 px-2 py-0.5 rounded text-[10px]">مرفوض ❌</span>`;
+                    try {
+                        const container = document.getElementById('userDepositHistory');
+                        if(!container) return;
+                        if(snap.empty) {
+                            container.innerHTML = `<p class="text-center text-gray-400 text-xs py-3">لا توجد إيداعات مسجلة</p>`;
+                            return;
+                        }
+                        container.innerHTML = '';
+                        const items = snap.docs.map(d => d.data()).sort((a,b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
+                        items.forEach(dep => {
+                            const amt = Number(dep.amount) || 0;
+                            let statusBadge = `<span class="text-amber-500 bg-amber-50 px-2 py-0.5 rounded text-[10px]">قيد الانتظار</span>`;
+                            if(dep.status === 'approved') statusBadge = `<span class="text-green-600 bg-green-50 px-2 py-0.5 rounded text-[10px]">مقبول ✅</span>`;
+                            if(dep.status === 'rejected') statusBadge = `<span class="text-red-500 bg-red-50 px-2 py-0.5 rounded text-[10px]">مرفوض ❌</span>`;
 
-                        container.innerHTML += `
-                            <div class="bg-white dark:bg-gray-800 p-3 rounded-xl border border-gray-100 dark:border-gray-700 flex justify-between items-center text-xs">
-                                <div>
-                                    <b class="text-gray-800 dark:text-gray-100 block">إيداع ${amt.toFixed(2)}$</b>
-                                    <small class="text-gray-400 block font-mono text-[10px]">TXID: ${dep.txid || '-'}</small>
+                            container.innerHTML += `
+                                <div class="bg-white dark:bg-gray-800 p-3 rounded-xl border border-gray-100 dark:border-gray-700 flex justify-between items-center text-xs">
+                                    <div>
+                                        <b class="text-gray-800 dark:text-gray-100 block">إيداع ${amt.toFixed(2)}$</b>
+                                        <small class="text-gray-400 block font-mono text-[10px]">TXID: ${dep.txid || '-'}</small>
+                                    </div>
+                                    ${statusBadge}
                                 </div>
-                                ${statusBadge}
-                            </div>
-                        `;
-                    });
+                            `;
+                        });
+                    } catch(e) { console.log("Deposits Render Error", e); }
                 }, err => console.log("Deposits Error", err));
 
                 renderPlans();
